@@ -3,6 +3,7 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 
 import { Layout } from './layout/Layout'
+import TeamPlayerManager from './pages/equipos/TeamPlayerManager'
 import { FutbolPage } from './pages/futbol/FutbolPage'
 import { HomePage } from './pages/home/HomePage'
 import { VoleyPage } from './pages/VoleyPage'
@@ -32,6 +33,15 @@ function App() {
           element={
             <Layout>
               <VoleyPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/administrador-equipo"
+          element={
+            <Layout>
+              <TeamPlayerManager />
             </Layout>
           }
         />
