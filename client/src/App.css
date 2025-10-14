@@ -6,6 +6,7 @@
   width: 100%;
   height: 100%;
   background-color: var(--background);
+  font-family: var(--font-open-sans);
 }
 
 @keyframes logo-spin {

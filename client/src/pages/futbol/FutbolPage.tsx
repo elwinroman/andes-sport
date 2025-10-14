@@ -46,8 +46,9 @@ const CurrentMatch = {
 export function FutbolPage() {
   return (
     <section className="w-full">
-      {/* Breadcrum */}
-      <div>Futbol - Equipo - etc</div>
+      <h2 className="hidden px-1 py-2 text-sm font-medium text-left font-montserrat text-secondary sm:block">
+        Resultados de fútbol en directo y cronograma del campeonato CRACLASA
+      </h2>
 
       <article className="flex flex-col gap-1 sm:gap-4 sm:flex-row">
         <div className="flex flex-col gap-0 sm:gap-4 flex-[2_1_0%] sm:max-w-[400px] w-full self-center sm:self-start">

@@ -8,7 +8,7 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <nav className="fixed w-full h-12 bg-black">
+    <nav className="fixed z-50 w-full h-12 bg-black font-montserrat">
       <div className="flex items-center justify-between w-full h-full px-2 m-auto max-w-7xl">
         {/* Menú */}
         <ul className="flex items-center w-full h-full overflow-x-auto">
@@ -18,7 +18,7 @@ export function Navbar() {
                 <NavLink
                   to={item.href}
                   className={({ isActive }) =>
-                    `relative flex items-center h-full gap-1 px-2 text-sm group ${isActive ? 'text-brand-magenta' : 'text-white'}`
+                    `relative flex items-center h-full gap-1 px-2 text-sm font-medium group ${isActive ? 'text-brand-magenta' : 'text-white'}`
                   }
                 >
                   <span className="relative">

@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Open Sans Variable", sans-serif;
+  --font-open-sans: "Open Sans Variable", sans-serif;
   --font-montserrat: "Montserrat Variable", monospace;
 
   --color-background: var(--background);
@@ -19,24 +19,31 @@
   --color-brand-cyan: #00cbff;
   --color-brand-magenta: #ff287a;
   --color-brand-blue: #003264;
+  --color-accent: #fdca40;
+
+  --shadow-widget: var(--shadow-widget);
 }
 
 @layer base {
   :root {
-    --background: #eeeeee;
+    --background: #fafaf8;
     --card: #ffffff;
 
-    --primary: rgba(0, 0, 0, 1);
+    --primary: #292b23;
     --primary-foreground: rgba(255, 255, 255, 1);
     --secondary: #637381;
 
     --border: rgba(145,158,171,0.25);
     --action-hover: rgba(145 158 171 / 0.13);
+
+    --shadow-widget: 0 1px 8px rgba(110, 110, 110, .1);
   }
   
   .dark {
-    --background: #1a1a1a;
-    --card: #252525;
+    /* --background: #1a1a1a; */
+    --background: #111111;
+    /* --card: #252525; */
+    --card: #24292b;
 
     --primary: rgba(255, 255, 255, 1);
     --primary-foreground: rgba(0, 0, 0, 1);
@@ -44,6 +51,8 @@
 
     --border: rgba(145,158,171,0.15);
     --action-hover: rgba(145 158 171 / 0.08);
+
+    --shadow-widget: 0 1px 8px rgba(33, 33, 33, .1);
   }
 }
 
