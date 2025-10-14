@@ -15,18 +15,18 @@ export function PlayerList({ team, onEditPlayer, onDeletePlayer, onOpenNewPlayer
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base font-semibold text-primary/80 flex items-center gap-2">
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-primary/80">
           <Users size={16} />
           Jugadores ({team.jugadores.length})
         </h3>
-        <Button onClick={() => onOpenNewPlayerDialog(team.id)} size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+        <Button onClick={() => onOpenNewPlayerDialog(team.id)} size="sm" className="text-white bg-green-600 hover:bg-green-700">
           <Plus className="mr-1" />
           Agregar Jugador
         </Button>
       </div>
 
       {team.jugadores.length === 0 ? (
-        <div className="text-center py-8 bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 dark:border-gray-600 dark:bg-background">
+        <div className="py-8 text-center border-2 border-dashed rounded-lg bg-slate-50 border-slate-200 dark:border-gray-600 dark:bg-background">
           <p className="text-secondary">No hay jugadores en este equipo</p>
           <Button onClick={() => onOpenNewPlayerDialog(team.id)} variant="link" className="text-brand-magenta">
             Agregar el primero
@@ -37,10 +37,10 @@ export function PlayerList({ team, onEditPlayer, onDeletePlayer, onOpenNewPlayer
           {team.jugadores.map((player) => (
             <div
               key={player.id}
-              className="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors border border-border dark:bg-background dark:hover:bg-zinc-900"
+              className="flex items-center justify-between px-2 py-1 transition-colors border rounded-lg bg-slate-50 hover:bg-slate-100 border-border dark:bg-background dark:hover:bg-zinc-900"
             >
               <div>
-                <p className="font-medium text-primary/90 text-sm px-2">
+                <p className="px-2 text-sm font-medium text-primary/90">
                   {player.nombres} {player.apellidos}
                 </p>
               </div>

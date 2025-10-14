@@ -17,23 +17,28 @@ interface TeamCardProps {
 
 export function TeamCard({ team, onEditTeam, onDeleteTeam, onEditPlayer, onDeletePlayer, onOpenNewPlayerDialog }: TeamCardProps) {
   return (
-    <Card className="overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-      <CardHeader className="bg-brand-cyan dark:bg-brand-blue text-white py-1">
+    <Card className="overflow-hidden transition-shadow shadow-widget hover:shadow-md">
+      <CardHeader className="pt-4 text-primary">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <CardTitle className="text-2xl">{team.nombre}</CardTitle>
-            {team.detalles && <p className="text-sm">{team.detalles}</p>}
+            <CardTitle className="text-xl font-montserrat">{team.nombre}</CardTitle>
+            {team.detalles && <p className="text-sm text-left">{team.detalles}</p>}
           </div>
-          <div className="flex gap-2">
+          <div className="flex self-start gap-2">
             <Button
               onClick={() => onEditTeam(team)}
               variant="ghost"
               size="icon-sm"
-              className="text-white hover:bg-blue-500 dark:hover:bg-blue-500"
+              className="text-blue-500 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white"
             >
               <Pencil />
             </Button>
-            <Button onClick={() => onDeleteTeam(team.id)} variant="ghost" size="icon-sm" className="text-white hover:bg-red-500">
+            <Button
+              onClick={() => onDeleteTeam(team.id)}
+              variant="ghost"
+              size="icon-sm"
+              className="text-red-500 hover:bg-red-500 dark:hover:bg-red-500 hover:text-white"
+            >
               <Trash2 />
             </Button>
           </div>
