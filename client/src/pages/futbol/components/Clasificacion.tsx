@@ -100,13 +100,13 @@ export function Clasificacion() {
 
   return (
     <Card className="w-auto">
-      <div className="mx-auto px-3 py-3">
+      <div className="px-3 py-3 mx-auto">
         <div className="overflow-hidden">
           <div className="overflow-x-auto">
-            <h5 className="font-bold text-primary mb-2">Clasificación</h5>
+            <h5 className="mb-2 font-bold text-primary">Clasificación</h5>
             <table className="w-full text-sm text-primary">
               <thead className="text-xs text-secondary">
-                <tr>
+                <tr className="bg-background">
                   <th className="px-4 py-3 text-left">Pos</th>
                   <th className="px-4 py-3 text-left">Team</th>
                   <th className="px-2 py-3 text-center">PJ</th>
@@ -115,7 +115,7 @@ export function Clasificacion() {
                   <th className="px-2 py-3 text-center">P</th>
                   <th className="px-2 py-3 text-center">Goles</th>
                   <th className="px-2 py-3 text-center">+/-</th>
-                  <th className="px-2 py-3 text-center font-bold">PTS</th>
+                  <th className="px-2 py-3 font-bold text-center">PTS</th>
                   <th className="px-4 py-3 text-center">Form</th>
                 </tr>
               </thead>
@@ -136,8 +136,8 @@ export function Clasificacion() {
                     <td className="px-2 py-2 text-center">
                       {team.gf}:{team.gc}
                     </td>
-                    <td className="px-2 py-2 text-center font-medium">{team.gd > 0 ? `+${team.gd}` : team.gd}</td>
-                    <td className="px-2 py-2 text-center font-bold text-base">{team.pts}</td>
+                    <td className="px-2 py-2 font-medium text-center">{team.gd > 0 ? `+${team.gd}` : team.gd}</td>
+                    <td className="px-2 py-2 text-base font-bold text-center">{team.pts}</td>
                     <td className="px-2 py-2">
                       <div className="flex gap-0.5 justify-center">
                         {team.form.map((result, i) => (
@@ -157,10 +157,10 @@ export function Clasificacion() {
           </div>
         </div>
 
-        <div className="mt-4 bg-background text-primary text-left text-sm flex flex-col gap-2 p-3 rounded-sm">
+        <div className="flex flex-col gap-2 p-3 mt-4 text-sm text-left rounded-sm bg-background text-primary">
           <span className="font-bold">Reglas</span>
 
-          <div className="text-green-500 flex gap-1 items-center">
+          <div className="flex items-center gap-1 text-green-500">
             <CircleIcon size={12} />
             <span className="text-xs text-secondary">Clasificación Final</span>
           </div>
