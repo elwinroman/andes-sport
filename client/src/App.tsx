@@ -3,9 +3,10 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 
 import { Layout } from './layout/Layout'
-import TeamPlayerManager from './pages/equipos/TeamPlayerManager'
+import { TeamPlayerManager } from './pages/equipos/TeamPlayerManager'
 import { FutbolPage } from './pages/futbol/FutbolPage'
 import { HomePage } from './pages/home/HomePage'
+import { MatchManager } from './pages/partidos/MatchManager'
 import { VoleyPage } from './pages/VoleyPage'
 
 function App() {
@@ -38,10 +39,19 @@ function App() {
         />
 
         <Route
-          path="/administrador-equipo"
+          path="/gestor/equipos"
           element={
             <Layout>
               <TeamPlayerManager />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/gestor/partidos"
+          element={
+            <Layout>
+              <MatchManager />
             </Layout>
           }
         />

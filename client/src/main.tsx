@@ -1,3 +1,5 @@
+import '@fontsource-variable/montserrat'
+import '@fontsource-variable/open-sans'
 import './index.css'
 
 import { StrictMode } from 'react'
