@@ -14,8 +14,57 @@ export class EquipoJugadorService {
   ) {}
 
   async create(createEquipoJugadorDto: CreateEquipoJugadorDto): Promise<EquipoJugador> {
-    const equipoJugador = this.equipoJugadorRepository.create(createEquipoJugadorDto)
-    return await this.equipoJugadorRepository.save(equipoJugador)
+    const { idEquipo, idJugador } = createEquipoJugadorDto
+
+    // Paso 1: Desactivar todas las relaciones activas del jugador con otros equipos
+    const relacionesActivasOtrosEquipos = await this.equipoJugadorRepository.find({
+      where: { idJugador, lVigente: true },
+    })
+
+    if (relacionesActivasOtrosEquipos.length > 0) {
+      const fechaActual = new Date()
+      for (const relacion of relacionesActivasOtrosEquipos) {
+        // Solo desactivar si es un equipo diferente
+        if (relacion.idEquipo !== idEquipo) {
+          relacion.lVigente = false
+          relacion.dFechaModifica = fechaActual
+        }
+      }
+      await this.equipoJugadorRepository.save(relacionesActivasOtrosEquipos)
+    }
+
+    // Paso 2: Verificar si ya existe una relación con el equipo destino
+    const relacionConEquipoDestino = await this.equipoJugadorRepository.findOne({
+      where: { idEquipo, idJugador },
+      relations: ['equipo', 'jugador'],
+    })
+
+    if (relacionConEquipoDestino) {
+      // Si existe pero está inactiva, reactivarla
+      if (!relacionConEquipoDestino.lVigente) {
+        relacionConEquipoDestino.lVigente = true
+        relacionConEquipoDestino.dFechaModifica = new Date()
+        return await this.equipoJugadorRepository.save(relacionConEquipoDestino)
+      }
+      // Si ya está activa, retornarla
+      return relacionConEquipoDestino
+    }
+
+    // Paso 3: Si no existe, crear una nueva relación
+    const nuevaRelacion = this.equipoJugadorRepository.create(createEquipoJugadorDto)
+    await this.equipoJugadorRepository.save(nuevaRelacion)
+
+    // Retornar con relaciones cargadas
+    const relacionCreada = await this.equipoJugadorRepository.findOne({
+      where: { idEquipo, idJugador },
+      relations: ['equipo', 'jugador'],
+    })
+
+    if (!relacionCreada) {
+      throw new NotFoundException(`No se pudo crear la relación Equipo-Jugador`)
+    }
+
+    return relacionCreada
   }
 
   async findAll(): Promise<EquipoJugador[]> {

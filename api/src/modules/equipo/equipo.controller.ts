@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 
+import { JwtAuthGuard } from './../auth/jwt-auth.guard'
 import { CreateEquipoDto } from './dtos/create-equipo.dto'
 import { UpdateEquipoDto } from './dtos/update-equipo.dto'
 import { EquipoService } from './equipo.service'
 
+@UseGuards(JwtAuthGuard)
 @Controller('equipos')
 export class EquipoController {
   constructor(private readonly equipoService: EquipoService) {}
@@ -16,6 +18,11 @@ export class EquipoController {
   @Get()
   findAll() {
     return this.equipoService.findAll()
+  }
+
+  @Get('/basic')
+  findAllWithoutPlayers() {
+    return this.equipoService.findAllWithoutPlayers()
   }
 
   @Get(':id')
