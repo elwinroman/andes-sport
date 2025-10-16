@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
 import { EquipoJugador } from '../../entities/equipo-jugador.entity'
+import { getCurrentUTCDate } from '../../utils/date.util'
 import { CreateEquipoJugadorDto } from './dtos/create-equipo-jugador.dto'
 import { UpdateEquipoJugadorDto } from './dtos/update-equipo-jugador.dto'
 
@@ -22,7 +23,7 @@ export class EquipoJugadorService {
     })
 
     if (relacionesActivasOtrosEquipos.length > 0) {
-      const fechaActual = new Date()
+      const fechaActual = getCurrentUTCDate()
       for (const relacion of relacionesActivasOtrosEquipos) {
         // Solo desactivar si es un equipo diferente
         if (relacion.idEquipo !== idEquipo) {
@@ -43,7 +44,7 @@ export class EquipoJugadorService {
       // Si existe pero está inactiva, reactivarla
       if (!relacionConEquipoDestino.lVigente) {
         relacionConEquipoDestino.lVigente = true
-        relacionConEquipoDestino.dFechaModifica = new Date()
+        relacionConEquipoDestino.dFechaModifica = getCurrentUTCDate()
         return await this.equipoJugadorRepository.save(relacionConEquipoDestino)
       }
       // Si ya está activa, retornarla
@@ -106,7 +107,7 @@ export class EquipoJugadorService {
 
   async update(idEquipo: number, idJugador: number, updateEquipoJugadorDto: UpdateEquipoJugadorDto): Promise<EquipoJugador> {
     const equipoJugador = await this.findOne(idEquipo, idJugador)
-    equipoJugador.dFechaModifica = new Date()
+    equipoJugador.dFechaModifica = getCurrentUTCDate()
 
     Object.assign(equipoJugador, updateEquipoJugadorDto)
     return await this.equipoJugadorRepository.save(equipoJugador)

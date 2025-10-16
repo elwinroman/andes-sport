@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 
 import { Equipo } from '../../entities/equipo.entity'
 import { EquipoJugador } from '../../entities/equipo-jugador.entity'
+import { getCurrentUTCDate } from '../../utils/date.util'
 import { CreateEquipoDto } from './dtos/create-equipo.dto'
 import { UpdateEquipoDto } from './dtos/update-equipo.dto'
 
@@ -59,7 +60,7 @@ export class EquipoService {
 
   async update(id: number, updateEquipoDto: UpdateEquipoDto): Promise<Equipo> {
     const equipo = await this.findOne(id)
-    equipo.dFechaModifica = new Date()
+    equipo.dFechaModifica = getCurrentUTCDate()
 
     Object.assign(equipo, updateEquipoDto)
     return await this.equipoRepository.save(equipo)
@@ -74,7 +75,7 @@ export class EquipoService {
     })
 
     if (relacionesActivas.length > 0) {
-      const fechaActual = new Date()
+      const fechaActual = getCurrentUTCDate()
       for (const relacion of relacionesActivas) {
         relacion.lVigente = false
         relacion.dFechaModifica = fechaActual

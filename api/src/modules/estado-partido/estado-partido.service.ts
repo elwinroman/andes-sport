@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
 import { EstadoPartido } from '../../entities/estado-partido.entity'
+import { getCurrentUTCDate } from '../../utils/date.util'
 import { CreateEstadoPartidoDto } from './dtos/create-estado-partido.dto'
 import { UpdateEstadoPartidoDto } from './dtos/update-estado-partido.dto'
 
@@ -39,7 +40,7 @@ export class EstadoPartidoService {
 
   async update(id: number, updateEstadoPartidoDto: UpdateEstadoPartidoDto): Promise<EstadoPartido> {
     const estadoPartido = await this.findOne(id)
-    estadoPartido.dFechaModifica = new Date()
+    estadoPartido.dFechaModifica = getCurrentUTCDate()
 
     Object.assign(estadoPartido, updateEstadoPartidoDto)
     return await this.estadoPartidoRepository.save(estadoPartido)

@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm'
 
 import { EquipoJugador } from '../../entities/equipo-jugador.entity'
 import { Jugador } from '../../entities/jugador.entity'
+import { getCurrentUTCDate } from '../../utils/date.util'
 import { CreateJugadorDto } from './dtos/create-jugador.dto'
 import { CreateJugadorConEquipoDto } from './dtos/create-jugador-con-equipo.dto'
 import { UpdateJugadorDto } from './dtos/update-jugador.dto'
@@ -45,7 +46,7 @@ export class JugadorService {
 
   async update(id: number, updateJugadorDto: UpdateJugadorDto): Promise<Jugador> {
     const jugador = await this.findOne(id)
-    jugador.dFechaModifica = new Date()
+    jugador.dFechaModifica = getCurrentUTCDate()
 
     Object.assign(jugador, updateJugadorDto)
     return await this.jugadorRepository.save(jugador)
@@ -122,7 +123,7 @@ export class JugadorService {
     try {
       // Verificar que el jugador existe
       const jugador = await this.findOne(id)
-      jugador.dFechaModifica = new Date()
+      jugador.dFechaModifica = getCurrentUTCDate()
 
       // Actualizar datos del jugador si se proporcionan
       if (updateJugadorConEquipoDto.cNombreJugador !== undefined) {
@@ -140,7 +141,11 @@ export class JugadorService {
       // Si se proporciona un nuevo equipo, actualizar la relación
       if (updateJugadorConEquipoDto.idEquipo !== undefined) {
         // Desactivar relaciones anteriores
-        await queryRunner.manager.update(EquipoJugador, { idJugador: id, lVigente: true }, { lVigente: false, dFechaModifica: new Date() })
+        await queryRunner.manager.update(
+          EquipoJugador,
+          { idJugador: id, lVigente: true },
+          { lVigente: false, dFechaModifica: getCurrentUTCDate() },
+        )
 
         // Verificar si ya existe una relación con el nuevo equipo
         const relacionExistente = await queryRunner.manager.findOne(EquipoJugador, {
@@ -153,7 +158,7 @@ export class JugadorService {
         if (relacionExistente) {
           // Reactivar la relación existente
           relacionExistente.lVigente = true
-          relacionExistente.dFechaModifica = new Date()
+          relacionExistente.dFechaModifica = getCurrentUTCDate()
           await queryRunner.manager.save(relacionExistente)
         } else {
           // Crear nueva relación

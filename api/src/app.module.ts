@@ -38,6 +38,7 @@ import { UsersModule } from './modules/users/users.module'
         options: {
           encrypt: configService.get<string>('DB_ENCRYPT', 'false') === 'true',
           trustServerCertificate: configService.get<string>('DB_TRUST_SERVER_CERTIFICATE', 'true') === 'true',
+          useUTC: true, // Usar UTC para todas las operaciones de fecha
         },
       }),
       inject: [ConfigService],

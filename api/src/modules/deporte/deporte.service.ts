@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
 import { Deporte } from '../../entities/deporte.entity'
+import { getCurrentUTCDate } from '../../utils/date.util'
 import { CreateDeporteDto } from './dtos/create-deporte.dto'
 import { UpdateDeporteDto } from './dtos/update-deporte.dto'
 
@@ -39,7 +40,7 @@ export class DeporteService {
 
   async update(id: number, updateDeporteDto: UpdateDeporteDto): Promise<Deporte> {
     const deporte = await this.findOne(id)
-    deporte.dFechaModifica = new Date()
+    deporte.dFechaModifica = getCurrentUTCDate()
 
     Object.assign(deporte, updateDeporteDto)
     return await this.deporteRepository.save(deporte)

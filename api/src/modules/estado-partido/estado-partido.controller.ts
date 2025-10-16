@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CreateEstadoPartidoDto } from './dtos/create-estado-partido.dto'
 import { UpdateEstadoPartidoDto } from './dtos/update-estado-partido.dto'
 import { EstadoPartidoService } from './estado-partido.service'
 
+@UseGuards(JwtAuthGuard)
 @Controller('estados-partido')
 export class EstadoPartidoController {
   constructor(private readonly estadoPartidoService: EstadoPartidoService) {}
