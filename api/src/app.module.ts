@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import { AuthModule } from './modules/auth/auth.module'
 import { DeporteModule } from './modules/deporte/deporte.module'
 import { DetallesFutbolModule } from './modules/detalles-futbol/detalles-futbol.module'
 import { DetallesVoleyModule } from './modules/detalles-voley/detalles-voley.module'
@@ -12,6 +13,7 @@ import { EquipoJugadorModule } from './modules/equipo-jugador/equipo-jugador.mod
 import { EstadoPartidoModule } from './modules/estado-partido/estado-partido.module'
 import { JugadorModule } from './modules/jugador/jugador.module'
 import { PartidoModule } from './modules/partido/partido.module'
+import { UsersModule } from './modules/users/users.module'
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { PartidoModule } from './modules/partido/partido.module'
     EquipoJugadorModule,
     DetallesFutbolModule,
     DetallesVoleyModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
