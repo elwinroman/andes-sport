@@ -1,9 +1,12 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { DetallesVoleyService } from './detalles-voley.service'
 import { CreateDetallesVoleyDto } from './dtos/create-detalles-voley.dto'
+import { CreateDetallesVoleyArrayDto } from './dtos/create-detalles-voley-array.dto'
 import { UpdateDetallesVoleyDto } from './dtos/update-detalles-voley.dto'
 
+@UseGuards(JwtAuthGuard)
 @Controller('detalles-voley')
 export class DetallesVoleyController {
   constructor(private readonly detallesVoleyService: DetallesVoleyService) {}
@@ -13,23 +16,42 @@ export class DetallesVoleyController {
     return this.detallesVoleyService.create(createDetallesVoleyDto)
   }
 
+  @Post('bulk')
+  createMany(@Body() createDetallesVoleyArrayDto: CreateDetallesVoleyArrayDto) {
+    return this.detallesVoleyService.createMany(createDetallesVoleyArrayDto.sets)
+  }
+
   @Get()
   findAll() {
     return this.detallesVoleyService.findAll()
   }
 
-  @Get(':idPartido')
-  findOne(@Param('idPartido', ParseIntPipe) idPartido: number) {
-    return this.detallesVoleyService.findOne(idPartido)
+  @Get('partido/:idPartido')
+  findByPartido(@Param('idPartido', ParseIntPipe) idPartido: number) {
+    return this.detallesVoleyService.findByPartido(idPartido)
   }
 
-  @Patch(':idPartido')
-  update(@Param('idPartido', ParseIntPipe) idPartido: number, @Body() updateDetallesVoleyDto: UpdateDetallesVoleyDto) {
-    return this.detallesVoleyService.update(idPartido, updateDetallesVoleyDto)
+  @Get(':idPartido/:numeroSet')
+  findOne(@Param('idPartido', ParseIntPipe) idPartido: number, @Param('numeroSet', ParseIntPipe) numeroSet: number) {
+    return this.detallesVoleyService.findOne(idPartido, numeroSet)
   }
 
-  @Delete(':idPartido')
-  remove(@Param('idPartido', ParseIntPipe) idPartido: number) {
-    return this.detallesVoleyService.remove(idPartido)
+  @Patch(':idPartido/:numeroSet')
+  update(
+    @Param('idPartido', ParseIntPipe) idPartido: number,
+    @Param('numeroSet', ParseIntPipe) numeroSet: number,
+    @Body() updateDetallesVoleyDto: UpdateDetallesVoleyDto,
+  ) {
+    return this.detallesVoleyService.update(idPartido, numeroSet, updateDetallesVoleyDto)
+  }
+
+  @Delete(':idPartido/:numeroSet')
+  remove(@Param('idPartido', ParseIntPipe) idPartido: number, @Param('numeroSet', ParseIntPipe) numeroSet: number) {
+    return this.detallesVoleyService.remove(idPartido, numeroSet)
+  }
+
+  @Delete('partido/:idPartido')
+  removeByPartido(@Param('idPartido', ParseIntPipe) idPartido: number) {
+    return this.detallesVoleyService.removeByPartido(idPartido)
   }
 }

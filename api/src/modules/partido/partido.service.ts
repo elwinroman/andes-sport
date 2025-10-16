@@ -6,6 +6,7 @@ import { ClasificacionEquipoDto, ClasificacionResponseDto } from '../../dto/clas
 import { DetallesFutbol } from '../../entities/detalles-futbol.entity'
 import { DetallesVoley } from '../../entities/detalles-voley.entity'
 import { Partido } from '../../entities/partido.entity'
+import { getCurrentUTCDate } from '../../utils/date.util'
 import { CreatePartidoDto } from './dtos/create-partido.dto'
 import { UpdatePartidoDto } from './dtos/update-partido.dto'
 
@@ -33,8 +34,8 @@ export class PartidoService {
   async findAll(): Promise<Partido[]> {
     return await this.partidoRepository.find({
       where: { lVigente: true },
-      relations: ['deporte', 'equipoLocal', 'equipoVisitante', 'estado'],
-      order: { dFechaEvento: 'DESC' },
+      relations: ['equipoLocal', 'equipoVisitante'],
+      order: { dFechaEvento: 'ASC' },
     })
   }
 
@@ -52,11 +53,21 @@ export class PartidoService {
   }
 
   async update(id: number, updatePartidoDto: UpdatePartidoDto): Promise<Partido> {
-    const partido = await this.findOne(id)
-    partido.dFechaModifica = new Date()
+    // Cargar partido SIN relaciones para evitar conflictos con foreign keys
+    const partido = await this.partidoRepository.findOne({
+      where: { idPartido: id, lVigente: true },
+    })
 
+    if (!partido) {
+      throw new NotFoundException(`Partido con ID ${id} no encontrado`)
+    }
+
+    partido.dFechaModifica = getCurrentUTCDate()
     Object.assign(partido, updatePartidoDto)
-    return await this.partidoRepository.save(partido)
+
+    const partidoGuardado = await this.partidoRepository.save(partido)
+
+    return partidoGuardado
   }
 
   async remove(id: number): Promise<void> {
@@ -140,12 +151,24 @@ export class PartidoService {
         golesLocal = detalle?.golesEquipoLocal || 0
         golesVisitante = detalle?.golesEquipoVisitante || 0
       } else {
-        // Para voley, usamos sets como "goles"
-        const detalle = await this.detallesVoleyRepository.findOne({
+        // Para voley, contar sets ganados por cada equipo
+        const detallesVoley = await this.detallesVoleyRepository.find({
           where: { idPartido: partido.idPartido },
         })
-        golesLocal = detalle?.setsEquipoLocal || 0
-        golesVisitante = detalle?.setsEquipoVisitante || 0
+
+        let setsLocal = 0
+        let setsVisitante = 0
+
+        for (const set of detallesVoley) {
+          if (set.puntosEquipoLocal > set.puntosEquipoVisitante) {
+            setsLocal++
+          } else if (set.puntosEquipoVisitante > set.puntosEquipoLocal) {
+            setsVisitante++
+          }
+        }
+
+        golesLocal = setsLocal
+        golesVisitante = setsVisitante
       }
 
       // Actualizar estadísticas
@@ -193,7 +216,7 @@ export class PartidoService {
     return {
       deporte: deporteNombre,
       equipos,
-      ultimaActualizacion: new Date(),
+      ultimaActualizacion: getCurrentUTCDate(),
     }
   }
 }
