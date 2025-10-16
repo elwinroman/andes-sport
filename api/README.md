@@ -118,10 +118,12 @@ La API estará disponible en `http://localhost:3000/api`
 - `GET /api/partidos` - Obtener todos los partidos (incluye relaciones)
 - `GET /api/partidos/:id` - Obtener un partido por ID
 - `POST /api/partidos` - Crear un nuevo partido
+- `POST /api/partidos/bulk` - Crear múltiples partidos en una sola operación
 - `PATCH /api/partidos/:id` - Actualizar un partido
 - `DELETE /api/partidos/:id` - Eliminar un partido (soft delete)
+- `GET /api/partidos/clasificacion/deporte/:idDeporte` - Obtener clasificación por deporte
 
-**Ejemplo de creación:**
+**Ejemplo de creación de un partido:**
 ```json
 {
   "idDeporte": 1,
@@ -130,6 +132,28 @@ La API estará disponible en `http://localhost:3000/api`
   "dFechaEvento": "2025-01-15T20:00:00Z",
   "idEstado": 1,
   "lVigente": true
+}
+```
+
+**Ejemplo de creación múltiple (bulk):**
+```json
+{
+  "partidos": [
+    {
+      "idDeporte": 1,
+      "idEquipoLocal": 1,
+      "idEquipoVisitante": 2,
+      "dFechaEvento": "2025-01-15T20:00:00Z",
+      "idEstado": 1
+    },
+    {
+      "idDeporte": 1,
+      "idEquipoLocal": 3,
+      "idEquipoVisitante": 4,
+      "dFechaEvento": "2025-01-16T18:00:00Z",
+      "idEstado": 1
+    }
+  ]
 }
 ```
 

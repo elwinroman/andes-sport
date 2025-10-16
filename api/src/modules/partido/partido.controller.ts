@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common'
 
+import { Partido } from '../../entities/partido.entity'
 import { CreatePartidoDto } from './dtos/create-partido.dto'
+import { CreatePartidosArrayDto } from './dtos/create-partidos-array.dto'
 import { UpdatePartidoDto } from './dtos/update-partido.dto'
 import { PartidoService } from './partido.service'
 
@@ -11,6 +13,11 @@ export class PartidoController {
   @Post()
   create(@Body() createPartidoDto: CreatePartidoDto) {
     return this.partidoService.create(createPartidoDto)
+  }
+
+  @Post('bulk')
+  createMany(@Body() createPartidosArrayDto: CreatePartidosArrayDto): Promise<Partido[]> {
+    return this.partidoService.createMany(createPartidosArrayDto.partidos)
   }
 
   @Get()

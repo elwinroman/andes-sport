@@ -18,8 +18,14 @@ export class Partido {
   @Column({ name: 'idEquipoVisitante', nullable: true })
   idEquipoVisitante: number
 
-  @Column({ name: 'dFechaEvento', type: 'datetime', nullable: true })
+  @Column({ name: 'dFechaEvento', type: 'datetime2', nullable: true })
   dFechaEvento: Date
+
+  @Column({ name: 'dFechaInicio', type: 'datetime2', nullable: true })
+  dFechaInicio: Date
+
+  @Column({ name: 'dFechaFin', type: 'datetime2', nullable: true })
+  dFechaFin: Date
 
   @Column({ name: 'idEstado', nullable: true })
   idEstado: number
@@ -27,10 +33,10 @@ export class Partido {
   @Column({ name: 'lVigente', type: 'bit', default: 1 })
   lVigente: boolean
 
-  @CreateDateColumn({ name: 'dFechaRegistra', type: 'datetime' })
+  @CreateDateColumn({ name: 'dFechaRegistra', type: 'datetime2' })
   dFechaRegistra: Date
 
-  @Column({ name: 'dFechaModifica', type: 'datetime', nullable: true })
+  @Column({ name: 'dFechaModifica', type: 'datetime2', nullable: true })
   dFechaModifica: Date
 
   @ManyToOne(() => Deporte, deporte => deporte.partidos)

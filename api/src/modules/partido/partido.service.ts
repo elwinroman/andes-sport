@@ -25,6 +25,11 @@ export class PartidoService {
     return await this.partidoRepository.save(partido)
   }
 
+  async createMany(createPartidosDtos: CreatePartidoDto[]): Promise<Partido[]> {
+    const partidos = this.partidoRepository.create(createPartidosDtos)
+    return await this.partidoRepository.save(partidos)
+  }
+
   async findAll(): Promise<Partido[]> {
     return await this.partidoRepository.find({
       where: { lVigente: true },

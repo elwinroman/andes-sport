@@ -22,6 +22,16 @@ export class CreatePartidoDto {
   @Type(() => Date)
   dFechaEvento: Date
 
+  @IsOptional()
+  @IsDate({ message: 'La fecha de inicio debe ser una fecha válida' })
+  @Type(() => Date)
+  dFechaInicio?: Date
+
+  @IsOptional()
+  @IsDate({ message: 'La fecha de fin debe ser una fecha válida' })
+  @Type(() => Date)
+  dFechaFin?: Date
+
   @IsNotEmpty({ message: 'El ID del estado es requerido' })
   @IsInt({ message: 'El ID del estado debe ser un número entero' })
   @IsPositive({ message: 'El ID del estado debe ser positivo' })

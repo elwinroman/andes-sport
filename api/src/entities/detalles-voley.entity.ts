@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 
 import { Partido } from './partido.entity'
 
@@ -7,11 +7,8 @@ export class DetallesVoley {
   @PrimaryColumn({ name: 'idPartido' })
   idPartido: number
 
-  @Column({ name: 'nSetsEquipoLocal', type: 'int', nullable: true })
-  setsEquipoLocal: number
-
-  @Column({ name: 'nSetsEquipoVisitante', type: 'int', nullable: true })
-  setsEquipoVisitante: number
+  @PrimaryColumn({ name: 'nNumeroSet', type: 'int' })
+  numeroSet: number
 
   @Column({ name: 'nPuntosEquipoLocal', type: 'int', nullable: true })
   puntosEquipoLocal: number
@@ -19,7 +16,7 @@ export class DetallesVoley {
   @Column({ name: 'nPuntosEquipoVisitante', type: 'int', nullable: true })
   puntosEquipoVisitante: number
 
-  @OneToOne(() => Partido)
+  @ManyToOne(() => Partido)
   @JoinColumn({ name: 'idPartido' })
   partido: Partido
 }

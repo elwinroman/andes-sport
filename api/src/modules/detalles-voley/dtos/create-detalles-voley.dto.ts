@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsOptional, IsPositive, Min } from 'class-validator'
+import { IsInt, IsNotEmpty, IsPositive, Min } from 'class-validator'
 
 export class CreateDetallesVoleyDto {
   @IsNotEmpty({ message: 'El ID del partido es requerido' })
@@ -6,23 +6,18 @@ export class CreateDetallesVoleyDto {
   @IsPositive({ message: 'El ID del partido debe ser positivo' })
   idPartido: number
 
-  @IsOptional()
-  @IsInt({ message: 'Los sets del equipo local deben ser un número entero' })
-  @Min(0, { message: 'Los sets del equipo local no pueden ser negativos' })
-  setsEquipoLocal?: number
+  @IsNotEmpty({ message: 'El número de set es requerido' })
+  @IsInt({ message: 'El número de set debe ser un número entero' })
+  @IsPositive({ message: 'El número de set debe ser positivo' })
+  numeroSet: number
 
-  @IsOptional()
-  @IsInt({ message: 'Los sets del equipo visitante deben ser un número entero' })
-  @Min(0, { message: 'Los sets del equipo visitante no pueden ser negativos' })
-  setsEquipoVisitante?: number
-
-  @IsOptional()
+  @IsNotEmpty({ message: 'Los puntos del equipo local son requeridos' })
   @IsInt({ message: 'Los puntos del equipo local deben ser un número entero' })
   @Min(0, { message: 'Los puntos del equipo local no pueden ser negativos' })
-  puntosEquipoLocal?: number
+  puntosEquipoLocal: number
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'Los puntos del equipo visitante son requeridos' })
   @IsInt({ message: 'Los puntos del equipo visitante deben ser un número entero' })
   @Min(0, { message: 'Los puntos del equipo visitante no pueden ser negativos' })
-  puntosEquipoVisitante?: number
+  puntosEquipoVisitante: number
 }
