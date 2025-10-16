@@ -1,4 +1,9 @@
+import { Save } from 'lucide-react'
 import { useState } from 'react'
+import { Navigate } from 'react-router-dom'
+
+import { Button } from '@/components/ui/button'
+import { useStore } from '@/zustand/store'
 
 import { AvailableTeamsList } from './components/AvailableTeamsList'
 import { DeleteMatchDialog } from './components/DeleteMatchDialog'
@@ -14,6 +19,9 @@ export function MatchManager() {
     availableTeams,
     matches,
     deleteMatch,
+    updateMatch,
+    startMatch,
+    finishMatch,
     resetAll,
     generateMatchesFromConfig,
     assignNextTeam,
@@ -25,6 +33,8 @@ export function MatchManager() {
     selectedSport,
     setSelectedSport,
     loading,
+    isSaving,
+    saveError,
   } = useMatchManager()
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -62,11 +72,9 @@ export function MatchManager() {
         <MatchHeader
           canReset={matches.length > 0}
           canUseConfiguration={canUseConfiguration && matches.length === 0}
-          canGenerateFromConfig={allTeamsAssigned}
           selectedSport={selectedSport}
           hasMatches={matches.length > 0}
           onReset={handleReset}
-          onGenerateFromConfig={handleGenerateFromConfig}
           onSportChange={setSelectedSport}
         />
 
@@ -100,31 +108,53 @@ export function MatchManager() {
             {canUseConfiguration && matches.length === 0 && (
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-primary">Configuración de Partidos</h2>
+                  <h2 className="text-lg font-semibold text-primary font-montserrat">Configuración de Partidos</h2>
                   <div className="flex gap-2">
                     {teamAssignments && (
-                      <button
-                        onClick={clearTeamAssignments}
-                        className="px-4 py-2 text-sm font-medium transition-colors border rounded-lg text-slate-600 border-slate-300 hover:bg-slate-100"
-                      >
+                      <Button onClick={clearTeamAssignments} variant="outline">
                         Limpiar
-                      </button>
+                      </Button>
                     )}
-                    <button
+                    <Button
                       onClick={assignNextTeam}
                       disabled={getAssignmentProgress().assigned === getAssignmentProgress().total}
-                      className="px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                      className="bg-accent text-black hover:bg-accent/90"
                     >
                       Asignar Siguiente
-                    </button>
-                    <button
-                      onClick={randomizeTeamAssignments}
-                      className="px-4 py-2 text-sm font-medium text-white transition-colors bg-purple-600 rounded-lg hover:bg-purple-700"
+                    </Button>
+                    <Button onClick={randomizeTeamAssignments}>Aleatorizar Todos</Button>
+                    <Button
+                      onClick={handleGenerateFromConfig}
+                      disabled={!allTeamsAssigned || isSaving}
+                      className="bg-green-600 hover:bg-green-700"
                     >
-                      Aleatorizar Todos
-                    </button>
+                      {isSaving ? (
+                        <>
+                          <div className="w-4 h-4 mr-2 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
+                          Guardando...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          Guardar Fixture
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
+
+                {/* Mensaje de error al guardar */}
+                {saveError && (
+                  <div className="p-4 mb-4 border-2 border-red-200 rounded-lg bg-red-50">
+                    <div className="flex items-start gap-3">
+                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-xl bg-red-100 rounded-full">❌</div>
+                      <div className="flex-1">
+                        <h4 className="mb-1 text-sm font-bold text-red-900">Error al guardar el fixture</h4>
+                        <p className="text-sm text-red-800">{saveError}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Lista de equipos disponibles */}
                 {!allTeamsAssigned && availableTeams.length > 0 && (
@@ -156,7 +186,6 @@ export function MatchManager() {
                         <span className="text-3xl animate-pulse">🎲</span>
                         <div>
                           <p className="text-sm font-bold text-indigo-900">Aleatorio</p>
-                          <p className="text-xs text-indigo-600">Sorpresa</p>
                         </div>
                       </div>
                     </div>
@@ -174,7 +203,13 @@ export function MatchManager() {
             {/* Lista de Partidos Generados */}
             {matches.length > 0 && (
               <div className="mt-6">
-                <MatchList matches={matches} onDeleteMatch={handleDeleteMatch} />
+                <MatchList
+                  matches={matches}
+                  onDeleteMatch={handleDeleteMatch}
+                  onEditMatch={updateMatch}
+                  onStartMatch={startMatch}
+                  onFinishMatch={finishMatch}
+                />
               </div>
             )}
           </>

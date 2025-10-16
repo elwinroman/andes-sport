@@ -1,0 +1,49 @@
+import axios from 'axios'
+
+import { type AxiosCall } from '@/models'
+import { loadAbort } from '@/utils/load-abort.util'
+import { useStore } from '@/zustand/store'
+
+const api = axios.create({
+  baseURL: 'http://192.168.1.68:3000/api/',
+})
+
+const token = useStore.getState().accessToken
+
+export interface CreateDetallesFutbolRequest {
+  idPartido: number
+  golesEquipoLocal: number
+  golesEquipoVisitante: number
+}
+
+export interface DetallesFutbolApiResponse {
+  idDetalleFutbol: number
+  idPartido: number
+  golesEquipoLocal: number
+  golesEquipoVisitante: number
+  lVigente: boolean
+  dFechaRegistra: string
+  dFechaModifica: string | null
+}
+
+export const createDetallesFutbolService = (params: CreateDetallesFutbolRequest): AxiosCall<DetallesFutbolApiResponse> => {
+  const controller = loadAbort()
+
+  const adapterCall = api
+    .post<DetallesFutbolApiResponse>('/detalles-futbol', params, {
+      signal: controller.signal,
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      return {
+        ...response,
+        data: response.data,
+      }
+    })
+
+  return {
+    call: adapterCall,
+    controller,
+  }
+}

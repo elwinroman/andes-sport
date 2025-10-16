@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
+
 import { getMatchConfiguration } from '../constants/matchConfigHelper'
 import { type Team } from '../hooks/useMatchManager'
 
@@ -5,6 +7,72 @@ interface DualSportConfigurationPreviewProps {
   availableTeams: Team[]
   teamAssignments: Map<number, Team> | null
   assignmentProgress: { assigned: number; total: number }
+}
+
+interface SlotMachineTeamProps {
+  teamNumber: number
+  assignedTeam: Team | undefined
+  availableTeams: Team[]
+  isAssigning: boolean
+}
+
+function SlotMachineTeam({ teamNumber, assignedTeam, availableTeams, isAssigning }: SlotMachineTeamProps) {
+  const [displayText, setDisplayText] = useState<string>(`#${teamNumber}`)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const intervalRef = useRef<number | null>(null)
+  const hasAnimatedRef = useRef(false)
+
+  useEffect(() => {
+    // Si ya se asignó un equipo y estamos en proceso de asignación y no hemos animado antes
+    if (assignedTeam && isAssigning && !hasAnimatedRef.current) {
+      hasAnimatedRef.current = true
+      setIsAnimating(true)
+
+      let counter = 0
+      const maxSpins = 15 // Número de cambios antes de mostrar el resultado final
+
+      intervalRef.current = setInterval(() => {
+        // Seleccionar un equipo aleatorio para mostrar
+        const randomTeam = availableTeams[Math.floor(Math.random() * availableTeams.length)]
+        setDisplayText(randomTeam.nombre)
+
+        counter++
+        if (counter >= maxSpins) {
+          // Terminar la animación y mostrar el equipo asignado
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+          }
+          setTimeout(() => {
+            setDisplayText(assignedTeam.nombre)
+            setIsAnimating(false)
+          }, 100)
+        }
+      }, 80) // Cambiar cada 80ms para efecto de slot machine
+
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+        }
+      }
+    } else if (assignedTeam && !isAssigning) {
+      // Si ya terminó la asignación, mostrar directamente el equipo
+      setDisplayText(assignedTeam.nombre)
+      hasAnimatedRef.current = false
+    } else if (!assignedTeam) {
+      // Reset si no hay equipo asignado
+      setDisplayText(`#${teamNumber}`)
+      hasAnimatedRef.current = false
+    }
+  }, [assignedTeam, availableTeams, isAssigning, teamNumber])
+
+  const getTeamClass = () => {
+    if (isAnimating) {
+      return 'bg-yellow-400 text-slate-900 font-bold animate-pulse'
+    }
+    return assignedTeam ? 'bg-blue-500 text-white font-semibold' : 'bg-slate-200 text-slate-600'
+  }
+
+  return <span className={`px-2 py-0.5 rounded transition-all duration-200 ${getTeamClass()}`}>{displayText}</span>
 }
 
 export function DualSportConfigurationPreview({ availableTeams, teamAssignments, assignmentProgress }: DualSportConfigurationPreviewProps) {
@@ -24,21 +92,11 @@ export function DualSportConfigurationPreview({ availableTeams, teamAssignments,
 
   const progressPercentage = assignmentProgress.total > 0 ? (assignmentProgress.assigned / assignmentProgress.total) * 100 : 0
   const allTeamsAssigned = assignmentProgress.assigned === assignmentProgress.total && assignmentProgress.total > 0
-
-  // Función helper para obtener el equipo asignado o placeholder
-  const getTeamDisplay = (teamNumber: number) => {
-    const assignedTeam = teamAssignments?.get(teamNumber)
-    return assignedTeam ? assignedTeam.nombre : `#${teamNumber}`
-  }
-
-  const getTeamClass = (teamNumber: number) => {
-    const assignedTeam = teamAssignments?.get(teamNumber)
-    return assignedTeam ? 'bg-blue-500 text-white font-semibold' : 'bg-slate-200 text-slate-600'
-  }
+  const isAssigning = assignmentProgress.assigned > 0 && !allTeamsAssigned
 
   const renderSportConfig = (config: number[][], sportName: string, bgColor: string) => (
     <div className="flex-1">
-      <div className={`p-2 text-center ${bgColor} rounded-t-lg`}>
+      <div className={`p-2 text-center ${bgColor} rounded-t-md`}>
         <h3 className="text-sm font-bold text-white">{sportName}</h3>
         <p className="text-xs text-white opacity-90">{config.length} partidos</p>
       </div>
@@ -54,9 +112,19 @@ export function DualSportConfigurationPreview({ availableTeams, teamAssignments,
             >
               <span className="text-[10px] font-bold text-slate-400 w-4">{index + 1}</span>
               <div className="flex items-center flex-1 gap-1.5 text-xs">
-                <span className={`px-2 py-0.5 rounded ${getTeamClass(local)}`}>{getTeamDisplay(local)}</span>
+                <SlotMachineTeam
+                  teamNumber={local}
+                  assignedTeam={teamAssignments?.get(local)}
+                  availableTeams={availableTeams}
+                  isAssigning={isAssigning}
+                />
                 <span className="text-slate-400">vs</span>
-                <span className={`px-2 py-0.5 rounded ${getTeamClass(visitante)}`}>{getTeamDisplay(visitante)}</span>
+                <SlotMachineTeam
+                  teamNumber={visitante}
+                  assignedTeam={teamAssignments?.get(visitante)}
+                  availableTeams={availableTeams}
+                  isAssigning={isAssigning}
+                />
               </div>
             </div>
           )
@@ -66,13 +134,13 @@ export function DualSportConfigurationPreview({ availableTeams, teamAssignments,
   )
 
   return (
-    <div className="rounded-lg bg-background shadow-widget">
+    <div className="rounded-lg bg-card shadow-widget">
       {/* Header con progreso */}
       <div className="p-3 border-b bg-slate-50 border-border">
         <div className="flex items-center justify-between mb-2">
           <div>
             <p className="text-sm font-semibold text-secondary">Vista de Configuraciones</p>
-            <p className="text-xs text-slate-600">{availableTeams.length} equipos</p>
+            <p className="text-xs text-slate-600 text-left">{availableTeams.length} equipos</p>
           </div>
           <div className="text-right">
             <p className="text-lg font-bold text-primary">
@@ -94,8 +162,8 @@ export function DualSportConfigurationPreview({ availableTeams, teamAssignments,
 
       {/* Configuraciones lado a lado */}
       <div className="grid grid-cols-2 gap-4 p-4">
-        {renderSportConfig(futbolConfig, '⚽ Fútbol', 'bg-gradient-to-r from-green-600 to-green-500')}
-        {renderSportConfig(voleyConfig, '🏐 Vóley', 'bg-gradient-to-r from-orange-600 to-orange-500')}
+        {renderSportConfig(futbolConfig, 'Fútbol', 'bg-brand-blue')}
+        {renderSportConfig(voleyConfig, 'Vóley', 'bg-brand-magenta')}
       </div>
     </div>
   )

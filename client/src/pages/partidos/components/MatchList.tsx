@@ -8,9 +8,12 @@ import { MatchCard } from './MatchCard'
 interface MatchListProps {
   matches: Match[]
   onDeleteMatch: (matchId: number) => void
+  onEditMatch: (matchId: number, newDate: string) => Promise<void>
+  onStartMatch: (matchId: number) => Promise<void>
+  onFinishMatch: (matchId: number) => Promise<void>
 }
 
-export function MatchList({ matches, onDeleteMatch }: MatchListProps) {
+export function MatchList({ matches, onDeleteMatch, onEditMatch, onStartMatch, onFinishMatch }: MatchListProps) {
   return (
     <Card className="flex flex-col flex-1 p-6 shadow-widget">
       <CardHeader className="text-primary">
@@ -26,9 +29,17 @@ export function MatchList({ matches, onDeleteMatch }: MatchListProps) {
             <p className="mt-2 text-sm text-slate-400">Selecciona equipos para crear enfrentamientos</p>
           </div>
         ) : (
-          <div className="space-y-3 max-h-[600px] overflow-y-auto">
+          <div className="space-y-3">
             {matches.map((match, index) => (
-              <MatchCard key={match.id} match={match} index={index} onDelete={onDeleteMatch} />
+              <MatchCard
+                key={match.id}
+                match={match}
+                index={index}
+                onDelete={onDeleteMatch}
+                onEdit={onEditMatch}
+                onStart={onStartMatch}
+                onFinish={onFinishMatch}
+              />
             ))}
           </div>
         )}
