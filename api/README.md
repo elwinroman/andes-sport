@@ -130,10 +130,14 @@ La API estará disponible en `http://localhost:3000/api`
   "idEquipoLocal": 1,
   "idEquipoVisitante": 2,
   "dFechaEvento": "2025-01-15T20:00:00Z",
+  "dFechaInicio": "2025-01-15T20:00:00Z",
+  "dFechaFin": "2025-01-15T22:00:00Z",
   "idEstado": 1,
   "lVigente": true
 }
 ```
+
+**Nota:** Los campos `dFechaInicio` y `dFechaFin` son opcionales y permiten registrar el inicio y fin real del partido.
 
 **Ejemplo de creación múltiple (bulk):**
 ```json
@@ -144,6 +148,8 @@ La API estará disponible en `http://localhost:3000/api`
       "idEquipoLocal": 1,
       "idEquipoVisitante": 2,
       "dFechaEvento": "2025-01-15T20:00:00Z",
+      "dFechaInicio": "2025-01-15T20:00:00Z",
+      "dFechaFin": "2025-01-15T22:00:00Z",
       "idEstado": 1
     },
     {
@@ -151,6 +157,8 @@ La API estará disponible en `http://localhost:3000/api`
       "idEquipoLocal": 3,
       "idEquipoVisitante": 4,
       "dFechaEvento": "2025-01-16T18:00:00Z",
+      "dFechaInicio": "2025-01-16T18:00:00Z",
+      "dFechaFin": "2025-01-16T20:00:00Z",
       "idEstado": 1
     }
   ]
@@ -173,6 +181,105 @@ La API estará disponible en `http://localhost:3000/api`
   "idJugador": 1,
   "lVigente": true
 }
+```
+
+### Detalles de Fútbol
+- `GET /api/detalles-futbol` - Obtener todos los detalles de partidos de fútbol
+- `GET /api/detalles-futbol/:idPartido` - Obtener detalles de un partido específico
+- `POST /api/detalles-futbol` - Registrar detalles de un partido de fútbol
+- `PATCH /api/detalles-futbol/:idPartido` - Actualizar detalles de un partido
+- `DELETE /api/detalles-futbol/:idPartido` - Eliminar detalles de un partido
+
+**Ejemplo de creación:**
+```json
+{
+  "idPartido": 1,
+  "golesEquipoLocal": 3,
+  "golesEquipoVisitante": 2,
+}
+```
+
+### Detalles de Voley
+Los detalles de voley permiten registrar múltiples sets por partido (llave primaria compuesta: idPartido + numeroSet).
+
+- `GET /api/detalles-voley` - Obtener todos los detalles de partidos de voley
+- `GET /api/detalles-voley/partido/:idPartido` - Obtener todos los sets de un partido
+- `GET /api/detalles-voley/:idPartido/:numeroSet` - Obtener un set específico
+- `POST /api/detalles-voley` - Registrar un set individual
+- `POST /api/detalles-voley/bulk` - Registrar múltiples sets en una sola operación (recomendado)
+- `PATCH /api/detalles-voley/:idPartido/:numeroSet` - Actualizar un set
+- `DELETE /api/detalles-voley/:idPartido/:numeroSet` - Eliminar un set específico
+- `DELETE /api/detalles-voley/partido/:idPartido` - Eliminar todos los sets de un partido
+
+**Ejemplo de creación de un set individual:**
+```json
+{
+  "idPartido": 1,
+  "numeroSet": 1,
+  "puntosEquipoLocal": 25,
+  "puntosEquipoVisitante": 23
+}
+```
+
+**Ejemplo de creación múltiple (recomendado):**
+```json
+{
+  "sets": [
+    {
+      "idPartido": 1,
+      "numeroSet": 1,
+      "puntosEquipoLocal": 25,
+      "puntosEquipoVisitante": 23
+    },
+    {
+      "idPartido": 1,
+      "numeroSet": 2,
+      "puntosEquipoLocal": 23,
+      "puntosEquipoVisitante": 25
+    },
+    {
+      "idPartido": 1,
+      "numeroSet": 3,
+      "puntosEquipoLocal": 25,
+      "puntosEquipoVisitante": 20
+    }
+  ]
+}
+```
+
+**Nota:** El sistema cuenta automáticamente los sets ganados por cada equipo para la clasificación basándose en los puntos de cada set.
+
+### Autenticación
+- `POST /api/auth/register` - Registrar un nuevo usuario
+- `POST /api/auth/login` - Iniciar sesión y obtener token JWT
+- `GET /api/auth/profile` - Obtener perfil del usuario autenticado (requiere token)
+
+**Ejemplo de registro:**
+```json
+{
+  "username": "usuario123",
+  "password": "password_seguro"
+}
+```
+
+**Ejemplo de login:**
+```json
+{
+  "username": "usuario123",
+  "password": "password_seguro"
+}
+```
+
+**Respuesta del login:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Usar el token en requests protegidos:**
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ## Estructura del Proyecto
