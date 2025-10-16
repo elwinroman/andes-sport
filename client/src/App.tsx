@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 
 import { Layout } from './layout/Layout'
 import { TeamPlayerManager } from './pages/equipos/TeamPlayerManager'
+import { Error404Page } from './pages/error-404/Error404Page'
 import { FutbolPage } from './pages/futbol/FutbolPage'
 import { HomePage } from './pages/home/HomePage'
 import { LoginPage } from './pages/login/LoginPage'
@@ -47,6 +48,15 @@ function App() {
           element={
             <Layout>
               <MatchManager />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <Layout>
+              <Error404Page />
             </Layout>
           }
         />
