@@ -1,4 +1,4 @@
-import { Pencil, Plus, Trash2, Users } from 'lucide-react'
+import { Pencil, Plus, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 
@@ -13,12 +13,8 @@ interface PlayerListProps {
 
 export function PlayerList({ team, onEditPlayer, onDeletePlayer, onOpenNewPlayerDialog }: PlayerListProps) {
   return (
-    <>
+    <article className="p-3 rounded-md bg-background dark:bg-background/50">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-primary/80">
-          <Users size={16} />
-          Jugadores ({team.jugadores.length})
-        </h3>
         <Button onClick={() => onOpenNewPlayerDialog(team.id)} size="sm" className="text-white bg-green-600 hover:bg-green-700">
           <Plus className="mr-1" />
           Agregar Jugador
@@ -66,6 +62,6 @@ export function PlayerList({ team, onEditPlayer, onDeletePlayer, onOpenNewPlayer
           ))}
         </div>
       )}
-    </>
+    </article>
   )
 }

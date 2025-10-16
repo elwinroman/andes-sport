@@ -1,0 +1,5 @@
+export * from './api/equipo-api-response'
+export * from './api/jugador-api-response'
+export * from './axios-call.model'
+export * from './equipos.model'
+export * from './jugador.model'

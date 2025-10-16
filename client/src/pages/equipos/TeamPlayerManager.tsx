@@ -14,6 +14,7 @@ export function TeamPlayerManager() {
     isPlayerDialogOpen,
     isDeleteDialogOpen,
     deleteTarget,
+    availablePlayers,
     setCurrentTeam,
     setCurrentPlayer,
     setIsTeamDialogOpen,
@@ -27,7 +28,9 @@ export function TeamPlayerManager() {
     handleEditPlayer,
     handleDeletePlayer,
     openNewPlayerDialog,
+    handleAssignExistingPlayer,
     confirmDelete,
+    loading,
   } = useTeamPlayerManager()
 
   return (
@@ -43,10 +46,15 @@ export function TeamPlayerManager() {
         </Button>
       </div>
 
-      {teams.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center gap-2 py-8">
+          <div className="w-5 h-5 border-2 border-gray-300 rounded-full border-t-blue-600 animate-spin"></div>
+          <span className="text-gray-600">Cargando...</span>
+        </div>
+      ) : teams.length === 0 ? (
         <EmptyState onCreateTeam={openNewTeamDialog} />
       ) : (
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((team) => (
             <TeamCard
               key={team.id}
@@ -72,9 +80,12 @@ export function TeamPlayerManager() {
       <PlayerDialog
         open={isPlayerDialogOpen}
         currentPlayer={currentPlayer}
+        availablePlayers={availablePlayers}
         onOpenChange={setIsPlayerDialogOpen}
         onSave={handleSavePlayer}
+        onAssignExisting={handleAssignExistingPlayer}
         onPlayerChange={setCurrentPlayer}
+        loading={loading}
       />
 
       <DeleteDialog open={isDeleteDialogOpen} deleteTarget={deleteTarget} onOpenChange={setIsDeleteDialogOpen} onConfirm={confirmDelete} />

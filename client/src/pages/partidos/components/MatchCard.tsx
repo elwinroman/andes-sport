@@ -15,7 +15,9 @@ export function MatchCard({ match, index, onDelete }: MatchCardProps) {
     <div className="relative p-4 transition-all border rounded-lg group bg-slate-100 dark:bg-action-hover to-slate-100 border-border hover:shadow-md">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center flex-1 gap-4">
-          <div className="flex items-center justify-center w-8 h-8 text-sm font-bold text-white rounded-full bg-brand-magenta">{index + 1}</div>
+          <div className="flex items-center justify-center w-8 h-8 text-sm font-bold text-white rounded-full bg-brand-magenta">
+            {index + 1}
+          </div>
 
           <div className="flex items-center flex-1 gap-3">
             <div className="flex-1 text-right">
