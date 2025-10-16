@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common'
 
 import { CreateJugadorDto } from './dtos/create-jugador.dto'
+import { CreateJugadorConEquipoDto } from './dtos/create-jugador-con-equipo.dto'
 import { UpdateJugadorDto } from './dtos/update-jugador.dto'
+import { UpdateJugadorConEquipoDto } from './dtos/update-jugador-con-equipo.dto'
 import { JugadorService } from './jugador.service'
 
 @Controller('jugadores')
@@ -18,6 +20,11 @@ export class JugadorController {
     return this.jugadorService.findAll()
   }
 
+  @Get('sin-equipo')
+  findSinEquipo() {
+    return this.jugadorService.findSinEquipo()
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.jugadorService.findOne(id)
@@ -31,5 +38,15 @@ export class JugadorController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.jugadorService.remove(id)
+  }
+
+  @Post('con-equipo')
+  createConEquipo(@Body() createJugadorConEquipoDto: CreateJugadorConEquipoDto) {
+    return this.jugadorService.createConEquipo(createJugadorConEquipoDto)
+  }
+
+  @Patch(':id/con-equipo')
+  updateConEquipo(@Param('id', ParseIntPipe) id: number, @Body() updateJugadorConEquipoDto: UpdateJugadorConEquipoDto) {
+    return this.jugadorService.updateConEquipo(id, updateJugadorConEquipoDto)
   }
 }
