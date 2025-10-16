@@ -31,7 +31,7 @@ const useFetchAndLoad = <T = unknown>() => {
 
           // extrae el título y el detalle del error
           const errorTitle = data.error ?? 'Error desconocido'
-          const errorDetail = data.error.message ?? 'Error desconocido'
+          const errorDetail = data.message ?? 'Error desconocido'
 
           setError({
             title: errorTitle,
