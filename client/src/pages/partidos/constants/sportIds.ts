@@ -1,0 +1,42 @@
+export const SPORT_IDS = {
+  FUTBOL: 4,
+  VOLEY: 5,
+} as const
+
+export type SportIdType = (typeof SPORT_IDS)[keyof typeof SPORT_IDS]
+
+// Duración de cada partido en minutos
+export const SPORT_DURATION = {
+  FUTBOL: 20, // 20 minutos por partido de fútbol
+  VOLEY: 20, // 20 minutos por partido de vóley
+} as const
+
+// Configuración de horarios de partidos y fecha del evento
+export const MATCH_SCHEDULE = {
+  MATCH_DURATION: 20, // Duración de cada partido en minutos
+  BREAK_TIME: 5, // Tiempo de descanso entre partidos en minutos
+} as const
+
+/**
+ * Calcula el intervalo total entre partidos (duración + descanso)
+ * 20 minutos (partido) + 5 minutos (descanso) = 25 minutos entre cada inicio de partido
+ */
+export const MATCH_INTERVAL = MATCH_SCHEDULE.MATCH_DURATION + MATCH_SCHEDULE.BREAK_TIME
+
+// Fecha y hora del evento (en UTC)
+export const EVENT_DATE = {
+  YEAR: 2025,
+  MONTH: 9, // Octubre (0-indexed: 0 = Enero, 10 = Noviembre, NOTA: Parece que debería ser 9 para Octubre)
+  DAY: 18,
+  HOUR: 20, // Hora de inicio del evento: 20:00 UTC (3:00 PM local time (Lima/Peru))
+  MINUTE: 0, // Minuto de inicio: 00
+} as const
+
+/**
+ * Crea una fecha base en UTC para los partidos
+ * @returns Date object configurado en UTC con la fecha y hora del evento
+ */
+export const createEventDateUTC = (): Date => {
+  // Date.UTC crea una fecha en UTC sin conversiones de zona horaria
+  return new Date(Date.UTC(EVENT_DATE.YEAR, EVENT_DATE.MONTH, EVENT_DATE.DAY, EVENT_DATE.HOUR, EVENT_DATE.MINUTE, 0, 0))
+}

@@ -6,6 +6,7 @@ import { Layout } from './layout/Layout'
 import { TeamPlayerManager } from './pages/equipos/TeamPlayerManager'
 import { FutbolPage } from './pages/futbol/FutbolPage'
 import { HomePage } from './pages/home/HomePage'
+import { LoginPage } from './pages/login/LoginPage'
 import { MatchManager } from './pages/partidos/MatchManager'
 import { VoleyPage } from './pages/VoleyPage'
 
@@ -14,6 +15,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route
           path="/futbol"
           element={
@@ -32,7 +34,7 @@ function App() {
         />
 
         <Route
-          path="/gestor/equipos"
+          path="/gestor-equipos"
           element={
             <Layout>
               <TeamPlayerManager />
@@ -41,7 +43,7 @@ function App() {
         />
 
         <Route
-          path="/gestor/partidos"
+          path="/gestor-partidos"
           element={
             <Layout>
               <MatchManager />

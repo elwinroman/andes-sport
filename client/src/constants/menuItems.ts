@@ -1,28 +1,38 @@
 export interface MenuItem {
   href: string
   label: string
-  iconSize?: number
+  requiresAuth: boolean
 }
 
 export const menuItems: MenuItem[] = [
   {
     href: '/',
     label: 'Inicio',
-    iconSize: 16,
+    requiresAuth: false,
   },
   {
     href: '/futbol',
     label: 'Futbol',
-    iconSize: 20,
+    requiresAuth: false,
   },
   {
     href: '/voley',
     label: 'Voley',
-    iconSize: 20,
+    requiresAuth: false,
   },
   {
     href: '/gincana',
     label: 'Gincana',
-    iconSize: 20,
+    requiresAuth: false,
+  },
+  {
+    href: '/gestor-equipos',
+    label: 'Gestor equipos',
+    requiresAuth: true,
+  },
+  {
+    href: '/gestor-partidos',
+    label: 'Gestor partidos',
+    requiresAuth: true,
   },
 ]

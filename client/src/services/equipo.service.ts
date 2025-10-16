@@ -1,32 +1,14 @@
 import axios from 'axios'
 
 import { type AxiosCall, type Equipo, type EquipoApiResponse, type EquiposApiResponse } from '@/models'
-// import { AuthenticatedUserApiResponse, CheckSessionApiResponse } from '@/models/api'
 import { loadAbort } from '@/utils/load-abort.util'
+import { useStore } from '@/zustand/store'
 
 const api = axios.create({
   baseURL: 'http://192.168.1.68:3000/api/',
 })
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb21hbiIsInN1YiI6MSwiaWF0IjoxNzYwNTgzMDg4LCJleHAiOjE3NjExODc4ODh9.WUn_Z7L1C7f7zFbpwz14oOfd0opQOQNuKniXMBNjENM'
-
-// Interceptor para añadir el token Bearer automáticamente
-api.interceptors.request.use(
-  (config) => {
-    // Obtener el token desde localStorage, sessionStorage o donde lo guardes
-    // const token = localStorage.getItem('token')
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  },
-)
+const token = useStore.getState().accessToken
 
 export const getAllEquiposService = (): AxiosCall<EquiposApiResponse[]> => {
   const controller = loadAbort()
@@ -35,6 +17,7 @@ export const getAllEquiposService = (): AxiosCall<EquiposApiResponse[]> => {
     .get<EquiposApiResponse[]>('/equipos', {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
@@ -56,6 +39,7 @@ export const getAllEquiposWithoutPlayersService = (): AxiosCall<EquipoApiRespons
     .get<EquiposApiResponse[]>('/equipos/basic', {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
@@ -77,6 +61,7 @@ export const registrarEquipoService = (params: Equipo): AxiosCall<EquipoApiRespo
     .post<EquipoApiResponse>('/equipos', params, {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
@@ -98,6 +83,7 @@ export const actualizarEquipoService = (idEquipo: number, params: Equipo): Axios
     .patch<EquipoApiResponse>(`/equipos/${idEquipo}`, params, {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {

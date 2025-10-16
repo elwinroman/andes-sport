@@ -2,10 +2,13 @@ import axios from 'axios'
 
 import { type AxiosCall, type Jugador, type JugadorApiResponse, type JugadorSinEquipoApiResponse } from '@/models'
 import { loadAbort } from '@/utils/load-abort.util'
+import { useStore } from '@/zustand/store'
 
 const api = axios.create({
   baseURL: 'http://192.168.1.68:3000/api/',
 })
+
+const token = useStore.getState().accessToken
 
 export const registrarJugadorService = (params: Jugador): AxiosCall<JugadorApiResponse> => {
   const controller = loadAbort()
@@ -14,6 +17,7 @@ export const registrarJugadorService = (params: Jugador): AxiosCall<JugadorApiRe
     .post<JugadorApiResponse>('/jugadores/con-equipo', params, {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
@@ -35,6 +39,7 @@ export const actualizarJugadorService = (idJugador: number, params: Jugador): Ax
     .patch<JugadorApiResponse>(`/jugadores/${idJugador}/con-equipo`, params, {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
@@ -56,6 +61,7 @@ export const eliminarJugadorDeEquipoService = (idEquipo: number, idJugador: numb
     .delete<void>(`/equipo-jugador/${idEquipo}/${idJugador}`, {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
@@ -77,6 +83,7 @@ export const getJugadoresSinEquipoService = (): AxiosCall<JugadorSinEquipoApiRes
     .get<JugadorSinEquipoApiResponse[]>('/jugadores/sin-equipo', {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
@@ -102,6 +109,7 @@ export const asignarJugadorAEquipoService = (idEquipo: number, idJugador: number
     .post<JugadorApiResponse>('/equipo-jugador', params, {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {

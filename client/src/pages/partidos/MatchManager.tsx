@@ -8,6 +8,8 @@ import { MatchList } from './components/MatchList'
 import { useMatchManager } from './hooks/useMatchManager'
 
 export function MatchManager() {
+  const isAuthenticated = useStore((state) => state.isAuthenticated)
+
   const {
     availableTeams,
     matches,
@@ -51,6 +53,8 @@ export function MatchManager() {
 
   const progress = getAssignmentProgress()
   const allTeamsAssigned = progress.assigned === progress.total && progress.total > 0
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />
 
   return (
     <div className="py-4">

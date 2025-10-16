@@ -1,11 +1,15 @@
 import { Plus } from 'lucide-react'
+import { Navigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
+import { useStore } from '@/zustand/store'
 
 import { DeleteDialog, EmptyState, PlayerDialog, TeamCard, TeamDialog } from './components'
 import { useTeamPlayerManager } from './hooks/useTeamPlayerManager'
 
 export function TeamPlayerManager() {
+  const isAuthenticated = useStore((state) => state.isAuthenticated)
+
   const {
     teams,
     currentTeam,
@@ -32,6 +36,8 @@ export function TeamPlayerManager() {
     confirmDelete,
     loading,
   } = useTeamPlayerManager()
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />
 
   return (
     <section className="py-4">

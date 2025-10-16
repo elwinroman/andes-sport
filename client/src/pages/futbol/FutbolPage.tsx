@@ -2,47 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { Clasificacion, Destacado, Partidos } from './components'
 
-interface Deporte {
-  id: number
-  nombre: string
-}
-
-interface Equipo {
-  id: number
-  nombre: string
-}
-
-export const EstadoPartido = {
-  PROGRAMADO: 'programado',
-  LIVE: 'live',
-  FINALIZADO: 'finalizado',
-  POSPUESTO: 'pospuesto',
-  CANCELADO: 'cancelado',
-} as const
-export type EstadoPartido = (typeof EstadoPartido)[keyof typeof EstadoPartido]
-
-interface EventoPartido {
-  equipoVisitante: string
-  equipoLocal: string
-  estado: EstadoPartido
-  fechaPartido: Date
-}
-
-interface FutbolScore {
-  golLocal: number
-  golVisitante: number
-}
-
-interface PartidoFutbol extends EventoPartido {
-  resultado: FutbolScore
-}
-
-const CurrentMatch = {
-  homeTeam: 'QAballeros QAtrastroficos',
-  awayTeam: 'Codigosaurios',
-  status: '',
-}
-
 export function FutbolPage() {
   return (
     <section className="w-full">
