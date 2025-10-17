@@ -1,6 +1,6 @@
-# Ignorar completamente la carpeta api en Vercel
-api/
-api/**
+# Ignorar completamente la carpeta api (backend NestJS) en Vercel
+/api/
+/api/**
 
 # Ignorar archivos SQL
 *.sql
