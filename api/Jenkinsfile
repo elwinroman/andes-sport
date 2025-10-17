@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     parameters {
         choice(
             name: 'ENVIRONMENT',
@@ -10,16 +9,13 @@ pipeline {
         string(
             name: 'EXPOSE_PORT',
             defaultValue: '3000',
-            description: 'Puerto externo para exponer la aplicación en el host'
+            description: 'Puerto externo para exponer la aplicación'
         )
     }
-
     environment {
         NODE_ENV = 'production'
         PORT = '3000'
-        EXPOSE_PORT = "${params.EXPOSE_PORT}"  // puerto externo configurable
-
-        // Credenciales de Jenkins
+        EXPOSE_PORT = "${params.EXPOSE_PORT}"
         DB_USERNAME = credentials("DB_USERNAME_${params.ENVIRONMENT}")
         DB_PASSWORD = credentials("DB_PASSWORD_${params.ENVIRONMENT}")
         DB_HOST = credentials("DB_HOST_${params.ENVIRONMENT}")
@@ -31,51 +27,50 @@ pipeline {
         JWT_SECRET = credentials("JWT_SECRET_${params.ENVIRONMENT}")
         REGISTER_SECRET = credentials("REGISTER_SECRET_${params.ENVIRONMENT}")
     }
-
     stages {
-
         stage('Preparar') {
             steps {
-                echo "Limpiando contenedores antiguos para entorno ${params.ENVIRONMENT}..."
-                sh """
-                    docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} down --volumes --remove-orphans || true
-                """
+                dir('api') {
+                    echo "Limpiando contenedores antiguos para ${params.ENVIRONMENT}..."
+                    sh """
+                        docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} down --volumes --remove-orphans || true
+                    """
+                }
             }
         }
-
         stage('Construir imagen') {
             steps {
-                echo "Construyendo contenedores Docker para ${params.ENVIRONMENT}..."
-                sh """
-                    docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} build --no-cache
-                """
+                dir('api') { 
+                    echo "Construyendo contenedores Docker para ${params.ENVIRONMENT}..."
+                    sh """
+                        docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} build --no-cache
+                    """
+                }
             }
         }
-
         stage('Levantar contenedores') {
             steps {
-                echo "Levantando contenedores para ${params.ENVIRONMENT}..."
-                sh """
-                    docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} up -d
-                """
+                dir('api') { 
+                    echo "Levantando contenedores para ${params.ENVIRONMENT}..."
+                    sh """
+                        docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} up -d
+                    """
+                }
             }
         }
-
         stage('Verificar contenedores') {
             steps {
                 echo "Contenedores activos para ${params.ENVIRONMENT}:"
                 sh "docker ps"
             }
         }
-
     }
-
     post {
         success {
-            echo "Pipeline completado correctamente. App levantada en ${params.ENVIRONMENT}."
+            echo "Pipeline completado. App levantada en ${params.ENVIRONMENT}."
         }
         failure {
-            echo "Pipeline falló. Revisa los logs de Jenkins y Docker."
+            echo "Pipeline falló. Revisa los logs."
         }
     }
 }
