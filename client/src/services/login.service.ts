@@ -1,10 +1,11 @@
 import axios from 'axios'
 
+import { API_URL_BASE } from '@/environment/environment'
 import { type AxiosCall } from '@/models'
 import { loadAbort } from '@/utils/load-abort.util'
 
 const api = axios.create({
-  baseURL: 'http://192.168.1.68:3000/api/',
+  baseURL: API_URL_BASE,
 })
 
 export interface LoginResponse {
