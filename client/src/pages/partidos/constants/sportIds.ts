@@ -1,6 +1,6 @@
 export const SPORT_IDS = {
-  FUTBOL: 4,
-  VOLEY: 5,
+  FUTBOL: 1,
+  VOLEY: 2,
 } as const
 
 export type SportIdType = (typeof SPORT_IDS)[keyof typeof SPORT_IDS]

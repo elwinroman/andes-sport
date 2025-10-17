@@ -76,7 +76,7 @@ export function GincanaPage() {
       >
         {/* Juegos Section */}
         <div className="space-y-6">
-          {/* Carrera de Pasar el Objeto */}
+          {/* Carrera de Gusano */}
           <motion.div variants={itemVariants}>
             <Card className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="p-4 sm:p-6 bg-gradient-to-r from-brand-cyan/10 to-transparent">
@@ -85,11 +85,11 @@ export function GincanaPage() {
                     <Flag className="w-6 h-6 text-brand-cyan" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-primary font-montserrat">1. CARRERA DE PASAR EL OBJETO</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-primary font-montserrat text-left">1. CARRERA DE GUSANO</h2>
                     <div className="flex items-center gap-2 mt-2">
                       <Users className="w-4 h-4 text-primary/60" />
-                      <p className="text-sm text-primary/70">
-                        <strong>Integrantes:</strong> 6 por equipo - Mixto
+                      <p className="text-sm text-primary/70 text-left">
+                        <strong>Integrantes:</strong> Mínimo 4 personas por equipo - Mixto (misma cantidad en todos los equipos)
                       </p>
                     </div>
                   </div>
@@ -100,32 +100,35 @@ export function GincanaPage() {
                   <ul className="space-y-2 text-sm text-primary/80">
                     <li className="flex gap-2">
                       <span className="text-brand-cyan font-bold shrink-0">a)</span>
-                      <span>Cada equipo tiene 2 mantas, una sostenida por dos personas y sostenida por 4 personas</span>
+                      <span>
+                        Un integrante toma el balón al final de la fila y el resto de los integrantes se colocan echados delante de este
+                        mirando al suelo terminando de formar la fila
+                      </span>
                     </li>
                     <li className="flex gap-2">
                       <span className="text-brand-cyan font-bold shrink-0">b)</span>
                       <span>
-                        Cada equipo pasa el objeto usando la manta al hacerlo los que lo hicieron deben pasar por debajo de la manta y
-                        continuar para recibir el objeto nuevamente, repitiendo el juego de esta manera hasta llegar a la zona de
-                        lanzamiento
+                        El integrante con el balón correrá sobre la fila sin aplastar a sus compañeros, cuando llegue al inicio pasará el
+                        balón por debajo de la fila de integrantes (ellos deben elevarse con ayuda de sus brazos y piernas) y el último debe
+                        atraparlo
                       </span>
                     </li>
                     <li className="flex gap-2">
                       <span className="text-brand-cyan font-bold shrink-0">c)</span>
                       <span>
-                        Al llegar a la zona de lanzamiento aquellos que tengan el objeto deben de lanzarlo usando la manta a un compañero
-                        que esta con un saco
+                        El integrante que tenía el balón se colocará al inicio formando la fila con el resto para que el último con el balón
+                        realice el primer paso
                       </span>
                     </li>
                     <li className="flex gap-2">
                       <span className="text-brand-cyan font-bold shrink-0">d)</span>
-                      <span>El compañero con el saco debe recibir y encestar el objeto en el saco para ganar</span>
+                      <span>
+                        <strong>Gana el equipo que llegue a la meta más rápido</strong>
+                      </span>
                     </li>
                     <li className="flex gap-2">
                       <span className="text-brand-cyan font-bold shrink-0">e)</span>
-                      <span>
-                        <strong>Gana quien termina primero</strong>
-                      </span>
+                      <span>Si la pelota se escapa de la fila un integrante puede traerla y continuar con el recorrido</span>
                     </li>
                   </ul>
                 </div>
@@ -155,10 +158,10 @@ export function GincanaPage() {
                 <div className="space-y-3 text-left">
                   <h3 className="text-sm font-semibold text-primary">Instrucciones:</h3>
                   <ul className="space-y-2 text-sm text-primary/80 list-disc list-inside">
-                    <li>Antes de salir corriendo deberá darse 3 vueltas en el bastón</li>
-                    <li>Correr en bastón en la mano y pasarlo al siguiente compañero para continuar</li>
+                    <li>Debe formarse una fila con los integrantes para comenzar la carrera</li>
+                    <li>Para que el segundo integrante pueda iniciar la carrera el primero deberá tocar la palma de su mano</li>
                     <li>
-                      <strong>Juego:</strong> Carrera de relevos, gana quien termina primero las bebidas sin derramar el líquido
+                      <strong>Gana quien termina primero las bebidas sin derramar el líquido</strong>
                     </li>
                   </ul>
                 </div>
@@ -166,7 +169,7 @@ export function GincanaPage() {
             </Card>
           </motion.div>
 
-          {/* Enrollados */}
+          {/* Carrera de Pulpo */}
           <motion.div variants={itemVariants}>
             <Card className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="p-4 sm:p-6 bg-gradient-to-r from-brand-magenta/10 to-transparent">
@@ -174,74 +177,32 @@ export function GincanaPage() {
                   <div className="p-2 rounded-lg bg-brand-magenta/20 shrink-0">
                     <Target className="w-6 h-6 text-brand-magenta" />
                   </div>
-                  <div className="flex-1">
-                    <h2 className="text-xl sm:text-2xl font-bold text-primary font-montserrat">3. ENROLLADOS</h2>
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-primary font-montserrat text-left">3. CARRERA DE PULPO</h2>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Users className="w-4 h-4 text-primary/60" />
+                      <p className="text-sm text-primary/70 text-left">
+                        <strong>Integrantes:</strong> Mínimo 4 personas por equipo - Mixto (misma cantidad en todos los equipos)
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-left">
-                  {/* Preparación */}
-                  <div>
-                    <h3 className="text-sm font-semibold text-primary mb-2">Preparación:</h3>
-                    <ul className="space-y-1 text-sm text-primary/80 list-disc list-inside">
-                      <li>Cada equipo forma una fila</li>
-                      <li>El primer jugador sostiene todo el rollo de la venda</li>
-                      <li>El segundo jugador toma el extremo suelto de la venda</li>
-                    </ul>
-                  </div>
-
-                  {/* Cómo se juega */}
-                  <div>
-                    <h3 className="text-sm font-semibold text-primary mb-3">Cómo se juega - Paso a paso:</h3>
-                    <div className="space-y-3">
-                      <div className="pl-3 border-l-2 border-brand-magenta">
-                        <h4 className="text-sm font-semibold text-primary mb-1">
-                          a) Fase de enrollado (Primer jugador → Segundo jugador):
-                        </h4>
-                        <ul className="space-y-1 text-sm text-primary/80 list-disc list-inside ml-2">
-                          <li>
-                            A la señal de inicio, el segundo jugador (quien tiene el extremo) comienza a girar sobre sí mismo para enrollar
-                            la venda alrededor de su cuerpo
-                          </li>
-                          <li>El primer jugador sujeta el rollo inicial y va soltando la venda poco a poco mientras el segundo gira</li>
-                          <li>Esto continúa hasta que toda la venda está enrollada en el cuerpo del segundo jugador</li>
-                        </ul>
-                      </div>
-
-                      <div className="pl-3 border-l-2 border-brand-magenta">
-                        <h4 className="text-sm font-semibold text-primary mb-1">
-                          b) Fase de desenrollado y traspaso (Segundo → Tercer jugador):
-                        </h4>
-                        <ul className="space-y-1 text-sm text-primary/80 list-disc list-inside ml-2">
-                          <li>
-                            Una vez el segundo jugador tiene toda la venda enrollada, sin detenerse, debe entregar el extremo suelto (que
-                            ahora está en su cuerpo) al tercer jugador
-                          </li>
-                          <li>Ahora, el segundo jugador gira en sentido contrario para desenrollarse</li>
-                          <li>Al mismo tiempo, el tercer jugador gira para enrollar la venda que el segundo va soltando</li>
-                          <li>La venda pasa directamente del cuerpo del segundo al cuerpo del tercero</li>
-                        </ul>
-                      </div>
-
-                      <div className="pl-3 border-l-2 border-brand-magenta">
-                        <h4 className="text-sm font-semibold text-primary mb-1">c) Continuación del relevo:</h4>
-                        <p className="text-sm text-primary/80 ml-2">Se repite el mismo proceso:</p>
-                        <ul className="space-y-1 text-sm text-primary/80 list-disc list-inside ml-2">
-                          <li>Quien tiene la venda enrollada se desenrolla girando en reversa</li>
-                          <li>El siguiente en la fila se enrolla girando hacia adelante</li>
-                          <li>Así hasta que la venda llega al último jugador</li>
-                        </ul>
-                      </div>
-
-                      <div className="pl-3 border-l-2 border-brand-magenta">
-                        <h4 className="text-sm font-semibold text-primary mb-1">d) Final del juego:</h4>
-                        <p className="text-sm text-primary/80 ml-2">
-                          El juego termina cuando el último jugador tiene toda la venda enrollada en su cuerpo y levanta la mano o grita
-                          "¡Listo!".
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                <div className="space-y-3 text-left">
+                  <h3 className="text-sm font-semibold text-primary">Instrucciones:</h3>
+                  <ul className="space-y-2 text-sm text-primary/80 list-disc list-inside">
+                    <li>
+                      Los jugadores entrelazan sus brazos con las personas de al lado como si fueran un pulpo gigante. Se colocará una
+                      pelota en sus espaldas o centro del pulpo
+                    </li>
+                    <li>
+                      El objetivo es que el pulpo avance desde el inicio hasta el final cuidando que la pelota no se caiga o que algún
+                      integrante se pare durante el recorrido
+                    </li>
+                    <li>
+                      <strong>Si la pelota se cae o un integrante se para deberán comenzar la carrera desde el inicio</strong>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </Card>
@@ -250,61 +211,63 @@ export function GincanaPage() {
           {/* Sistema de Puntaje */}
           <motion.div variants={itemVariants}>
             <Card className="overflow-hidden">
-              <div className="p-4 sm:p-6 bg-background">
+              <div className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
                 <div className="flex items-start gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-brand-blue/20 shrink-0">
-                    <Award className="w-6 h-6 text-brand-blue" />
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 shrink-0">
+                    <Award className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-primary font-montserrat">Sistema de Puntaje y Clasificación</h2>
+                    <h2 className="text-xl sm:text-xl font-bold text-primary font-montserrat text-left">
+                      Sistema de Puntaje y Clasificación
+                    </h2>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <motion.div
-                    className="flex items-center gap-3 p-4 rounded-lg bg-brand-blue/10 border-2 border-brand-blue/20"
+                    className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-500 border-2 border-yellow-300 shadow-md"
                     whileHover={{
-                      scale: 1.02,
-                      borderColor: 'rgba(59, 130, 246, 0.4)',
+                      scale: 1.05,
+                      boxShadow: '0 10px 25px rgba(251, 191, 36, 0.4)',
                     }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Trophy className="w-8 h-8 text-brand-blue shrink-0" />
+                    <Trophy className="w-8 h-8 text-white shrink-0 drop-shadow-md" />
                     <div>
-                      <p className="text-lg font-bold text-primary">3 puntos</p>
-                      <p className="text-xs text-primary/60">Victoria</p>
+                      <p className="text-lg font-bold text-white">3 puntos</p>
+                      <p className="text-xs text-white/90 font-medium">Victoria</p>
                     </div>
                   </motion.div>
 
                   <motion.div
-                    className="flex items-center gap-3 p-4 rounded-lg bg-accent/10 border-2 border-accent/20"
+                    className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-br from-slate-300 to-slate-400 border-2 border-slate-300 shadow-md"
                     whileHover={{
-                      scale: 1.02,
-                      borderColor: 'rgba(249, 115, 22, 0.4)',
+                      scale: 1.05,
+                      boxShadow: '0 10px 25px rgba(148, 163, 184, 0.4)',
                     }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Medal className="w-8 h-8 text-accent shrink-0" />
+                    <Medal className="w-8 h-8 text-white shrink-0 drop-shadow-md" />
                     <div>
-                      <p className="text-lg font-bold text-primary">1 punto</p>
-                      <p className="text-xs text-primary/60">Empate</p>
+                      <p className="text-lg font-bold text-white">1 punto</p>
+                      <p className="text-xs text-white/90 font-medium">Empate</p>
                     </div>
                   </motion.div>
 
                   <motion.div
-                    className="flex items-center gap-3 p-4 rounded-lg bg-primary/5 border-2 border-primary/10"
+                    className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-br from-orange-700 to-red-800 border-2 border-orange-600 shadow-md"
                     whileHover={{
-                      scale: 1.02,
-                      borderColor: 'rgba(0, 0, 0, 0.2)',
+                      scale: 1.05,
+                      boxShadow: '0 10px 25px rgba(234, 88, 12, 0.4)',
                     }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="text-lg font-bold text-primary/60">0</span>
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
+                      <span className="text-lg font-bold text-white">0</span>
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-primary">0 puntos</p>
-                      <p className="text-xs text-primary/60">Derrota</p>
+                      <p className="text-lg font-bold text-white">0 puntos</p>
+                      <p className="text-xs text-white/90 font-medium">Derrota</p>
                     </div>
                   </motion.div>
                 </div>
