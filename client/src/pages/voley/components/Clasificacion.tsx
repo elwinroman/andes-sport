@@ -8,5 +8,5 @@ interface Props {
 }
 
 export function Clasificacion({ className, partidos, isLoading }: Props) {
-  return <ClasificacionDisplay className={className} sportType="futbol" partidos={partidos} isLoading={isLoading} />
+  return <ClasificacionDisplay className={className} sportType="voley" partidos={partidos} isLoading={isLoading} />
 }

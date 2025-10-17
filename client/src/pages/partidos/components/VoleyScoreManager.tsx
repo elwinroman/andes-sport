@@ -52,14 +52,36 @@ export function VoleyScoreManager({
     isCompleted: initialSet2Local >= VOLEY_CONFIG.MAX_POINTS_PER_SET || initialSet2Visitante >= VOLEY_CONFIG.MAX_POINTS_PER_SET,
   })
 
-  const [isUpdating, setIsUpdating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const { callEndpoint: updateDetalles } = useFetchAndLoad<DetallesVoleyApiResponse>()
 
   const updateSetScore = async (numeroSet: number, newPuntosLocal: number, newPuntosVisitante: number) => {
-    try {
-      setIsUpdating(true)
+    const currentSet = numeroSet === 1 ? set1 : set2
 
+    // Guardar valores previos para rollback en caso de error
+    const previousPuntosLocal = currentSet.puntosLocal
+    const previousPuntosVisitante = currentSet.puntosVisitante
+
+    // Determinar si el set está completo
+    const isCompleted = newPuntosLocal >= VOLEY_CONFIG.MAX_POINTS_PER_SET || newPuntosVisitante >= VOLEY_CONFIG.MAX_POINTS_PER_SET
+
+    // Optimistic UI: actualizar inmediatamente la interfaz
+    const updatedSet: SetScore = {
+      numeroSet,
+      puntosLocal: newPuntosLocal,
+      puntosVisitante: newPuntosVisitante,
+      isCompleted,
+    }
+
+    if (numeroSet === 1) {
+      setSet1(updatedSet)
+    } else {
+      setSet2(updatedSet)
+    }
+    setError(null)
+
+    try {
       const params: UpdateDetallesVoleyRequest = {
         puntosEquipoLocal: newPuntosLocal,
         puntosEquipoVisitante: newPuntosVisitante,
@@ -67,30 +89,34 @@ export function VoleyScoreManager({
 
       await updateDetalles(updateDetallesVoleyService(matchId, numeroSet, params))
 
-      // Determinar si el set está completo
-      const isCompleted = newPuntosLocal >= VOLEY_CONFIG.MAX_POINTS_PER_SET || newPuntosVisitante >= VOLEY_CONFIG.MAX_POINTS_PER_SET
-
-      // Actualizar estado local del set correspondiente
-      const updatedSet: SetScore = {
-        numeroSet,
-        puntosLocal: newPuntosLocal,
-        puntosVisitante: newPuntosVisitante,
-        isCompleted,
-      }
-
+      // Notificar al componente padre si existe el callback
       if (numeroSet === 1) {
-        setSet1(updatedSet)
         onScoreUpdate?.(updatedSet, set2)
       } else {
-        setSet2(updatedSet)
         onScoreUpdate?.(set1, updatedSet)
       }
 
       console.log(`✅ Set ${numeroSet} actualizado: ${team1Name} ${newPuntosLocal} - ${newPuntosVisitante} ${team2Name}`)
-    } catch (error) {
-      console.error(`Error al actualizar el set ${numeroSet}:`, error)
-    } finally {
-      setIsUpdating(false)
+    } catch (err) {
+      // Rollback: restaurar valores anteriores en caso de error
+      const rolledBackSet: SetScore = {
+        numeroSet,
+        puntosLocal: previousPuntosLocal,
+        puntosVisitante: previousPuntosVisitante,
+        isCompleted: previousPuntosLocal >= VOLEY_CONFIG.MAX_POINTS_PER_SET || previousPuntosVisitante >= VOLEY_CONFIG.MAX_POINTS_PER_SET,
+      }
+
+      if (numeroSet === 1) {
+        setSet1(rolledBackSet)
+      } else {
+        setSet2(rolledBackSet)
+      }
+
+      setError(`Error al actualizar el set ${numeroSet}`)
+      console.error(`Error al actualizar el set ${numeroSet}:`, err)
+
+      // Limpiar el error después de 3 segundos
+      setTimeout(() => setError(null), 3000)
     }
   }
 
@@ -141,7 +167,7 @@ export function VoleyScoreManager({
             <div className="flex items-center gap-1">
               <Button
                 onClick={() => handleDecrement(setData.numeroSet, 'local')}
-                disabled={setData.puntosLocal === 0 || isUpdating}
+                disabled={setData.puntosLocal === 0}
                 variant="outline"
                 size="icon"
                 className="w-6 h-6 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-30"
@@ -159,7 +185,7 @@ export function VoleyScoreManager({
               </div>
               <Button
                 onClick={() => handleIncrement(setData.numeroSet, 'local')}
-                disabled={isUpdating || setData.isCompleted}
+                disabled={setData.isCompleted}
                 variant="outline"
                 size="icon"
                 className="w-6 h-6 text-green-600 border-green-300 hover:bg-green-50 hover:text-green-700 disabled:opacity-30"
@@ -178,7 +204,7 @@ export function VoleyScoreManager({
             <div className="flex items-center gap-1">
               <Button
                 onClick={() => handleDecrement(setData.numeroSet, 'visitante')}
-                disabled={setData.puntosVisitante === 0 || isUpdating}
+                disabled={setData.puntosVisitante === 0}
                 variant="outline"
                 size="icon"
                 className="w-6 h-6 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-30"
@@ -196,7 +222,7 @@ export function VoleyScoreManager({
               </div>
               <Button
                 onClick={() => handleIncrement(setData.numeroSet, 'visitante')}
-                disabled={isUpdating || setData.isCompleted}
+                disabled={setData.isCompleted}
                 variant="outline"
                 size="icon"
                 className="w-6 h-6 text-green-600 border-green-300 hover:bg-green-50 hover:text-green-700 disabled:opacity-30"
@@ -217,6 +243,9 @@ export function VoleyScoreManager({
   return (
     <div className="flex flex-col gap-3 p-4 mt-3 border-t bg-slate-100 border-slate-300">
       <div className="text-sm font-semibold text-center text-slate-700">Marcador por Sets</div>
+      {error && (
+        <div className="px-3 py-2 text-sm text-center text-red-700 bg-red-100 border border-red-300 rounded">{error}</div>
+      )}
       <div className="grid grid-cols-2 gap-3">
         {renderSetControls(set1)}
         {renderSetControls(set2)}

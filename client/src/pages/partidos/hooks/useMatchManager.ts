@@ -47,6 +47,7 @@ export function useMatchManager() {
 
   const { callEndpoint: fetchTeams, loading, error } = useFetchAndLoad<EquipoApiResponse[]>()
   const { callEndpoint: saveBulkPartidos } = useFetchAndLoad<BulkPartidosResponse>()
+  const { callEndpoint: updatePartido } = useFetchAndLoad<PartidoApiResponse>()
   const { callEndpoint: fetchPartidos } = useFetchAndLoad<PartidoApiResponse[]>()
   const { callEndpoint: createDetallesFutbol } = useFetchAndLoad<DetallesFutbolApiResponse>()
   const { callEndpoint: createBulkDetallesVoley } = useFetchAndLoad<BulkDetallesVoleyResponse>()
@@ -63,9 +64,10 @@ export function useMatchManager() {
         }))
         setAllTeams(teamsData)
 
-        // Cargar partidos existentes desde la BD
-        const partidosResponse = await fetchPartidos(getAllPartidosService())
-        const partidosData = partidosResponse.data
+        // Cargar partidos existentes desde la BD - obtener ambos deportes
+        const futbolResponse = await fetchPartidos(getAllPartidosService(SPORT_IDS.FUTBOL))
+        const voleyResponse = await fetchPartidos(getAllPartidosService(SPORT_IDS.VOLEY))
+        const partidosData = [...futbolResponse.data, ...voleyResponse.data]
 
         if (partidosData.length > 0) {
           // Convertir partidos de la API al formato local
@@ -162,7 +164,7 @@ export function useMatchManager() {
   const updateMatch = async (matchId: number, newEventDate: string): Promise<void> => {
     try {
       // Actualizar en el backend
-      await saveBulkPartidos(updatePartidoService(matchId, { dFechaEvento: newEventDate }))
+      await updatePartido(updatePartidoService(matchId, { dFechaEvento: newEventDate }))
 
       // Actualizar el estado local
       const updateMatchInArray = (matchesArray: Match[]) =>
@@ -207,7 +209,7 @@ export function useMatchManager() {
       const now = new Date().toISOString()
 
       // Actualizar estado del partido en el backend
-      await saveBulkPartidos(
+      await updatePartido(
         updatePartidoService(matchId, {
           idEstado: MATCH_STATUS.EN_CURSO,
           dFechaInicio: now,
@@ -279,7 +281,7 @@ export function useMatchManager() {
       const now = new Date().toISOString()
 
       // Actualizar en el backend
-      await saveBulkPartidos(
+      await updatePartido(
         updatePartidoService(matchId, {
           idEstado: MATCH_STATUS.FINALIZADO,
           dFechaFin: now,

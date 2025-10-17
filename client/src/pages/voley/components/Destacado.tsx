@@ -8,5 +8,5 @@ interface Props {
 }
 
 export function Destacado({ className, partidos, isLoading }: Props) {
-  return <PartidoDestacado className={className} sportType="futbol" partidos={partidos} isLoading={isLoading} />
+  return <PartidoDestacado className={className} sportType="voley" partidos={partidos} isLoading={isLoading} />
 }

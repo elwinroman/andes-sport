@@ -31,6 +31,19 @@ export interface EquipoEnPartido {
   dFechaModifica: string | null
 }
 
+export interface DetallesFutbolEnPartido {
+  idPartido: number
+  golesEquipoLocal: number
+  golesEquipoVisitante: number
+}
+
+export interface DetallesVoleyEnPartido {
+  idPartido: number
+  numeroSet: number
+  puntosEquipoLocal: number
+  puntosEquipoVisitante: number
+}
+
 export interface PartidoApiResponse {
   idPartido: number
   idDeporte: number
@@ -45,6 +58,8 @@ export interface PartidoApiResponse {
   dFechaModifica: string | null
   equipoLocal: EquipoEnPartido
   equipoVisitante: EquipoEnPartido
+  detallesFutbol?: DetallesFutbolEnPartido
+  detallesVoley?: DetallesVoleyEnPartido[]
 }
 
 export interface BulkPartidosResponse {
@@ -53,13 +68,16 @@ export interface BulkPartidosResponse {
   partidos: PartidoApiResponse[]
 }
 
-export const getAllPartidosService = (): AxiosCall<PartidoApiResponse[]> => {
+export const getAllPartidosService = (idDeporte?: number): AxiosCall<PartidoApiResponse[]> => {
   const controller = loadAbort()
+
+  const params = idDeporte ? { idDeporte } : {}
 
   const adapterCall = api
     .get<PartidoApiResponse[]>('/partidos', {
       signal: controller.signal,
       withCredentials: true,
+      params,
     })
     .then((response) => {
       return {

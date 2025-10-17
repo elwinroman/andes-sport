@@ -52,6 +52,15 @@ export const formatDateLocal = (utcDate: string | Date): string => {
 }
 
 /**
+ * Formatea una fecha UTC a formato corto sin año
+ * @param utcDate - Fecha en formato UTC
+ * @returns String con formato "21/10"
+ */
+export const formatDateShort = (utcDate: string | Date): string => {
+  return utcToLocal(utcDate).format('DD/MM/YYYY')
+}
+
+/**
  * Obtiene la zona horaria actual del usuario
  * @returns String con el nombre de la zona horaria (ej: "America/Lima", "Europe/Madrid")
  */
@@ -66,4 +75,24 @@ export const getUserTimezone = (): string => {
  */
 export const localToUTC = (localDate: Date | string): string => {
   return dayjs(localDate).utc().toISOString()
+}
+
+/**
+ * Calcula los minutos transcurridos desde una fecha de inicio hasta ahora
+ * @param startDate - Fecha de inicio en formato UTC
+ * @returns Número de minutos transcurridos
+ */
+export const getElapsedMinutes = (startDate: string | Date): number => {
+  const start = dayjs.utc(startDate)
+  const now = dayjs.utc()
+  return now.diff(start, 'minute')
+}
+
+/**
+ * Formatea los minutos transcurridos en formato de partido (ejemplo: "15'", "90'")
+ * @param minutes - Número de minutos
+ * @returns String formateado con el símbolo de minuto
+ */
+export const formatMatchMinutes = (minutes: number): string => {
+  return `${minutes}'`
 }
