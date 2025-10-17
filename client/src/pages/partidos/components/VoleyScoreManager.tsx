@@ -243,9 +243,7 @@ export function VoleyScoreManager({
   return (
     <div className="flex flex-col gap-3 p-4 mt-3 border-t bg-slate-100 border-slate-300">
       <div className="text-sm font-semibold text-center text-slate-700">Marcador por Sets</div>
-      {error && (
-        <div className="px-3 py-2 text-sm text-center text-red-700 bg-red-100 border border-red-300 rounded">{error}</div>
-      )}
+      {error && <div className="px-3 py-2 text-sm text-center text-red-700 bg-red-100 border border-red-300 rounded">{error}</div>}
       <div className="grid grid-cols-2 gap-3">
         {renderSetControls(set1)}
         {renderSetControls(set2)}
