@@ -1,6 +1,42 @@
+import { motion } from 'framer-motion'
 import { Calendar, Navigation } from 'lucide-react'
 
 import { Navbar } from '@/layout/Navbar'
+
+const heroVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      staggerChildren: 0.3,
+    },
+  },
+}
+
+const titleVariants = {
+  hidden: { opacity: 0, y: -30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.4, 0, 0.2, 1] as const,
+    },
+  },
+}
+
+const infoVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.4, 0, 0.2, 1] as const,
+    },
+  },
+}
 
 export function HeroPage() {
   return (
@@ -15,31 +51,49 @@ export function HeroPage() {
         {/* Overlay de color */}
         <div className="absolute inset-0 bg-[#0d1028] opacity-77 mix-blend-multiply"></div>
 
-        <div className="flex flex-col items-center w-full gap-10 px-4 z-1 font-montserrat">
+        <motion.div
+          className="flex flex-col items-center w-full gap-10 px-4 z-1 font-montserrat"
+          variants={heroVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Titulo general */}
-          <div className="flex flex-col gap-4">
+          <motion.div className="flex flex-col gap-4" variants={titleVariants}>
             <h1 className="text-4xl font-extrabold text-white sm:text-6xl leading-11 sm:leading-13">Gran Campeonato</h1>
             <h2 className="text-3xl font-extrabold text-white sm:text-5xl">
               <span>Octubre </span>
-              <span className="text-accent">2</span>
-              <span className="text-brand-magenta">0</span>
+              <motion.span className="text-accent" whileHover={{ scale: 1.2 }} transition={{ duration: 0.2 }}>
+                2
+              </motion.span>
+              <motion.span className="text-brand-magenta" whileHover={{ scale: 1.2 }} transition={{ duration: 0.2 }}>
+                0
+              </motion.span>
               <span>2</span>
-              <span className="text-brand-cyan">5</span>
+              <motion.span className="text-brand-cyan" whileHover={{ scale: 1.2 }} transition={{ duration: 0.2 }}>
+                5
+              </motion.span>
             </h2>
-          </div>
+          </motion.div>
 
           {/* Fecha y lugar */}
-          <div className="flex flex-col items-center gap-3 text-sm sm:text-base sm:gap-10 sm:flex-row">
-            <div className="flex items-center gap-2 text-white">
+          <motion.div className="flex flex-col items-center gap-3 text-sm sm:text-base sm:gap-10 sm:flex-row" variants={infoVariants}>
+            <motion.a
+              href="https://maps.app.goo.gl/e2QUNsus2zXPVZtB6"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-white transition-colors hover:text-brand-magenta"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
               <Navigation size={20} className="text-brand-magenta" />
               <span>Leoncio Prado 514 "Club Deportivo Casona Moya"</span>
-            </div>
-            <div className="flex items-center gap-2 text-white">
+            </motion.a>
+            <motion.div className="flex items-center gap-2 text-white" whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
               <Calendar size={20} className="text-brand-magenta" />
               <span>Sabado, 18 de octubre</span>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
     </>
   )

@@ -6,6 +6,7 @@ import { Layout } from './layout/Layout'
 import { TeamPlayerManager } from './pages/equipos/TeamPlayerManager'
 import { Error404Page } from './pages/error-404/Error404Page'
 import { FutbolPage } from './pages/futbol/FutbolPage'
+import { GincanaPage } from './pages/gincana/GincanaPage'
 import { HomePage } from './pages/home/HomePage'
 import { LoginPage } from './pages/login/LoginPage'
 import { MatchManager } from './pages/partidos/MatchManager'
@@ -30,6 +31,15 @@ function App() {
           element={
             <Layout>
               <VoleyPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/gincana"
+          element={
+            <Layout>
+              <GincanaPage />
             </Layout>
           }
         />
