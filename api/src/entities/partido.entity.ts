@@ -1,6 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 import { Deporte } from './deporte.entity'
+import { DetallesFutbol } from './detalles-futbol.entity'
+import { DetallesVoley } from './detalles-voley.entity'
 import { Equipo } from './equipo.entity'
 import { EstadoPartido } from './estado-partido.entity'
 
@@ -54,4 +56,10 @@ export class Partido {
   @ManyToOne(() => EstadoPartido, estado => estado.partidos)
   @JoinColumn({ name: 'idEstado' })
   estado: EstadoPartido
+
+  @OneToOne(() => DetallesFutbol, detalle => detalle.partido)
+  detallesFutbol: DetallesFutbol
+
+  @OneToMany(() => DetallesVoley, detalle => detalle.partido)
+  detallesVoley: DetallesVoley[]
 }

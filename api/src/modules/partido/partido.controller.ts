@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common'
 
 import { Partido } from '../../entities/partido.entity'
 import { JwtAuthGuard } from './../auth/jwt-auth.guard'
@@ -24,8 +24,8 @@ export class PartidoController {
   }
 
   @Get()
-  findAll() {
-    return this.partidoService.findAll()
+  findAll(@Query('idDeporte', new ParseIntPipe({ optional: true })) idDeporte?: number) {
+    return this.partidoService.findAll(idDeporte)
   }
 
   @Get(':id')

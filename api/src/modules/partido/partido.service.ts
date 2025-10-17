@@ -31,10 +31,16 @@ export class PartidoService {
     return await this.partidoRepository.save(partidos)
   }
 
-  async findAll(): Promise<Partido[]> {
+  async findAll(idDeporte?: number): Promise<Partido[]> {
+    const where: { lVigente: boolean; idDeporte?: number } = { lVigente: true }
+
+    if (idDeporte) {
+      where.idDeporte = idDeporte
+    }
+
     return await this.partidoRepository.find({
-      where: { lVigente: true },
-      relations: ['equipoLocal', 'equipoVisitante'],
+      where,
+      relations: ['equipoLocal', 'equipoVisitante', 'detallesFutbol', 'detallesVoley'],
       order: { dFechaEvento: 'ASC' },
     })
   }

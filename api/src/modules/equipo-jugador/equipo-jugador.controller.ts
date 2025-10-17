@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CreateEquipoJugadorDto } from './dtos/create-equipo-jugador.dto'
 import { UpdateEquipoJugadorDto } from './dtos/update-equipo-jugador.dto'
 import { EquipoJugadorService } from './equipo-jugador.service'
 
+@UseGuards(JwtAuthGuard)
 @Controller('equipo-jugador')
 export class EquipoJugadorController {
   constructor(private readonly equipoJugadorService: EquipoJugadorService) {}

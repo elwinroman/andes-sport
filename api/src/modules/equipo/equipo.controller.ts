@@ -5,11 +5,11 @@ import { CreateEquipoDto } from './dtos/create-equipo.dto'
 import { UpdateEquipoDto } from './dtos/update-equipo.dto'
 import { EquipoService } from './equipo.service'
 
-@UseGuards(JwtAuthGuard)
 @Controller('equipos')
 export class EquipoController {
   constructor(private readonly equipoService: EquipoService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createEquipoDto: CreateEquipoDto) {
     return this.equipoService.create(createEquipoDto)
@@ -30,11 +30,13 @@ export class EquipoController {
     return this.equipoService.findOne(id)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateEquipoDto: UpdateEquipoDto) {
     return this.equipoService.update(id, updateEquipoDto)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.equipoService.remove(id)

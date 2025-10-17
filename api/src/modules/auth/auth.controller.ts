@@ -1,8 +1,11 @@
 import { Body, Controller, Get, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common'
+import { config } from 'dotenv'
 
 import { UsersService } from '../users/users.service'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt-auth.guard'
+
+config()
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +15,12 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(@Body() body: { username: string; password: string }) {
+  async register(@Body() body: { username: string; password: string; secretKey?: string }) {
+    const MASTER_KEY = process.env.REGISTER_SECRET ?? 'ClaveSuperSecreta'
+
+    if (body.secretKey !== MASTER_KEY) {
+      throw new UnauthorizedException('No autorizado para registrar usuarios')
+    }
     const user = await this.usersService.createUser(body.username, body.password)
     return { message: 'Usuario creado', user }
   }
