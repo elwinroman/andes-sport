@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { getMatchConfiguration } from '../constants/matchConfigHelper'
+import { getMatchConfiguration, getTeamsForSport } from '../constants/matchConfigHelper'
 import { type Team } from '../hooks/useMatchManager'
 
 interface DualSportConfigurationPreviewProps {
@@ -79,6 +79,10 @@ export function DualSportConfigurationPreview({ availableTeams, teamAssignments,
   const futbolConfig = getMatchConfiguration(availableTeams.length, 'futbol')
   const voleyConfig = getMatchConfiguration(availableTeams.length, 'voley')
 
+  // Calcular cuántos equipos participan en cada deporte
+  const futbolTeamsCount = getTeamsForSport(availableTeams.length, 'futbol')
+  const voleyTeamsCount = getTeamsForSport(availableTeams.length, 'voley')
+
   if (!futbolConfig || !voleyConfig || availableTeams.length === 0) {
     return (
       <div className="p-6 border rounded-lg border-border bg-background">
@@ -94,11 +98,13 @@ export function DualSportConfigurationPreview({ availableTeams, teamAssignments,
   const allTeamsAssigned = assignmentProgress.assigned === assignmentProgress.total && assignmentProgress.total > 0
   const isAssigning = assignmentProgress.assigned > 0 && !allTeamsAssigned
 
-  const renderSportConfig = (config: number[][], sportName: string, bgColor: string) => (
+  const renderSportConfig = (config: number[][], sportName: string, bgColor: string, teamsCount: number) => (
     <div className="flex-1">
       <div className={`p-2 text-center ${bgColor} rounded-t-md`}>
         <h3 className="text-sm font-bold text-white">{sportName}</h3>
-        <p className="text-xs text-white opacity-90">{config.length} partidos</p>
+        <p className="text-xs text-white opacity-90">
+          {teamsCount} equipos • {config.length} partidos
+        </p>
       </div>
       <div className="p-3 space-y-1.5 bg-white border-x border-b rounded-b-lg border-slate-200">
         {config.map(([local, visitante], index) => {
@@ -162,8 +168,8 @@ export function DualSportConfigurationPreview({ availableTeams, teamAssignments,
 
       {/* Configuraciones lado a lado */}
       <div className="grid grid-cols-2 gap-4 p-4">
-        {renderSportConfig(futbolConfig, 'Fútbol', 'bg-brand-blue')}
-        {renderSportConfig(voleyConfig, 'Vóley', 'bg-brand-magenta')}
+        {renderSportConfig(futbolConfig, 'Fútbol', 'bg-brand-blue', futbolTeamsCount)}
+        {renderSportConfig(voleyConfig, 'Vóley', 'bg-brand-magenta', voleyTeamsCount)}
       </div>
     </div>
   )

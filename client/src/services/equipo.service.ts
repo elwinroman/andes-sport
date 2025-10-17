@@ -106,6 +106,7 @@ export const eliminarEquipoService = (idEquipo: number): AxiosCall<void> => {
     .delete<void>(`/equipos/${idEquipo}`, {
       signal: controller.signal,
       withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       return {
