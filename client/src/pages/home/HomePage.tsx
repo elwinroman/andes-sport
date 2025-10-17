@@ -28,7 +28,7 @@ export function HomePage() {
           <div
             className="h-[300px] bg-brand-cyan rounded-md p-6 font-montserrat font-bold"
             style={{
-              backgroundImage: 'url(https://static.flashscore.com/res/_fs/build/soccer.574162f.png)',
+              backgroundImage: 'url(/soccer.574162f.webp)',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: '101%',
               backgroundSize: 'auto 100%',
@@ -44,7 +44,7 @@ export function HomePage() {
           <div
             className="h-[300px] bg-accent rounded-md p-6 font-montserrat font-bold"
             style={{
-              backgroundImage: 'url(https://static.flashscore.com/res/_fs/build/basketball.a4db9e2.png)',
+              backgroundImage: 'url(/basketball.a4db9e2.webp)',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: '101%',
               backgroundSize: 'auto 100%',
@@ -73,7 +73,7 @@ export function HomePage() {
           <div
             className="h-[300px] bg-brand-blue rounded-md p-6 font-montserrat font-bold"
             style={{
-              backgroundImage: 'url(https://static.flashscore.com/res/_fs/build/soccer.574162f.png)',
+              backgroundImage: 'url(/soccer.574162f.webp)',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: '101%',
               backgroundSize: 'auto 100%',

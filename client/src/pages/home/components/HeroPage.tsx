@@ -9,7 +9,7 @@ export function HeroPage() {
       <div
         className="relative flex items-center justify-center w-screen h-screen bg-red-300 bg-center bg-no-repeat bg-cover"
         style={{
-          backgroundImage: "url('https://wallpapercave.com/wp/xDRd0U2.jpg')",
+          backgroundImage: "url('/background-stadium.webp')",
         }}
       >
         {/* Overlay de color */}

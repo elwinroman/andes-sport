@@ -3,11 +3,7 @@ export function Error404Page() {
     <section className="grid place-content-center w-full h-full p-6 sm:p-8 md:p-10">
       <div className="flex items-center gap-10 flex-wrap">
         <div className="flex-1 grid md:place-content-end">
-          <img
-            src="https://ligasoccer.merku.love/static/media/404dark.6b1ae5a8219c2fa4558c.webp"
-            alt="error 404"
-            className="max-w-[400px] text-right w-full min-w-[300px]"
-          />
+          <img src="/error-404.webp" alt="error 404" className="max-w-[400px] text-right w-full min-w-[300px]" />
         </div>
 
         <div className="flex flex-col items-start flex-1 gap-3">

@@ -38,7 +38,7 @@ export function LoginPage() {
     <section className="w-full h-full grid place-content-center bg-background">
       <div className="shadow-widget bg-card w-[380px] px-7 py-9 rounded-md">
         <div className="w-full flex flex-col gap-6">
-          <img src="https://app.losandes.pe/logo-blue_horizontal.svg" alt="Logo andes" className="w-36 m-auto" />
+          <img src="/logo-blue_andes.svg" alt="Logo andes" className="w-36 m-auto" />
           <h2 className="text-2xl font-bold font-montserrat">Login Andes Sport</h2>
 
           <form className="flex flex-col gap-4" onSubmit={handleLogin}>
