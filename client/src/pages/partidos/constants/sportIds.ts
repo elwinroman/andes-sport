@@ -41,6 +41,18 @@ export const createEventDateUTC = (): Date => {
   return new Date(Date.UTC(EVENT_DATE.YEAR, EVENT_DATE.MONTH, EVENT_DATE.DAY, EVENT_DATE.HOUR, EVENT_DATE.MINUTE, 0, 0))
 }
 
+// Configuración de equipos por deporte
+export const SPORT_TEAM_CONFIG = {
+  FUTBOL: {
+    TOTAL_TEAMS: 6, // Solo 6 equipos juegan fútbol (equipos 2-7)
+    FIXED_TEAM_ID: 1, // ID del equipo que NO juega fútbol (Equipo 01)
+  },
+  VOLEY: {
+    TOTAL_TEAMS: 7, // 7 equipos juegan vóley (todos los equipos disponibles)
+    FIXED_TEAM_ID: 1, // ID del equipo que SIEMPRE juega en posición #1 (Equipo 01)
+  },
+} as const
+
 // Configuración de vóley
 export const VOLEY_CONFIG = {
   MAX_POINTS_PER_SET: 15, // Máximo de puntos por set

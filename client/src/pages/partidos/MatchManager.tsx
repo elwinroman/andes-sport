@@ -10,6 +10,7 @@ import { DeleteMatchDialog } from './components/DeleteMatchDialog'
 import { DualSportConfigurationPreview } from './components/DualSportConfigurationPreview'
 import { MatchHeader } from './components/MatchHeader'
 import { MatchList } from './components/MatchList'
+import { SPORT_TEAM_CONFIG } from './constants/sportIds'
 import { useMatchManager } from './hooks/useMatchManager'
 
 export function MatchManager() {
@@ -158,7 +159,7 @@ export function MatchManager() {
 
                 {/* Lista de equipos disponibles */}
                 {!allTeamsAssigned && availableTeams.length > 0 && (
-                  <AvailableTeamsList availableTeams={availableTeams} teamAssignments={teamAssignments} />
+                  <AvailableTeamsList availableTeams={availableTeams} teamAssignments={teamAssignments} selectedSport={selectedSport} />
                 )}
 
                 {/* Indicador del siguiente equipo a asignar */}
@@ -176,7 +177,12 @@ export function MatchManager() {
                           <p className="text-xs text-indigo-700">
                             {(() => {
                               const assignedTeams = Array.from(teamAssignments?.values() || [])
-                              const unassignedCount = availableTeams.filter((team) => !assignedTeams.find((t) => t.id === team.id)).length
+                              // Filtrar según el deporte
+                              let teamsForSport = availableTeams
+                              if (selectedSport === 'futbol') {
+                                teamsForSport = availableTeams.filter((team) => team.id !== SPORT_TEAM_CONFIG.FUTBOL.FIXED_TEAM_ID)
+                              }
+                              const unassignedCount = teamsForSport.filter((team) => !assignedTeams.find((t) => t.id === team.id)).length
                               return `${unassignedCount} equipo${unassignedCount !== 1 ? 's' : ''} disponible${unassignedCount !== 1 ? 's' : ''} • Selección aleatoria`
                             })()}
                           </p>
