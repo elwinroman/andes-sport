@@ -4,6 +4,8 @@ import { DataSource } from 'typeorm'
 // Cargar variables de entorno
 config()
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 export const AppDataSource = new DataSource({
   type: 'mssql',
   host: process.env.DB_HOST || 'localhost',
@@ -11,8 +13,8 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'sa',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_DATABASE || 'SI_AndesSport',
-  entities: ['src/entities/**/*.entity{.ts,.js}'],
-  migrations: ['src/migrations/**/*{.ts,.js}'],
+  entities: [isProduction ? 'dist/entities/**/*.entity.js' : 'src/entities/**/*.entity{.ts,.js}'],
+  migrations: [isProduction ? 'dist/migrations/**/*.js' : 'src/migrations/**/*{.ts,.js}'],
   synchronize: false,
   logging: true,
   options: {

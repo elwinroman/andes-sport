@@ -1,0 +1,14 @@
+services:
+  nest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "${CONTAINER_NAME:-nest-app}"
+    environment:
+      NODE_ENV: development
+    networks:
+      - default-network
+
+networks:
+  default-network:
+    driver: bridge

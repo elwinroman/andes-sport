@@ -1,0 +1,14 @@
+services:
+  nest-app:
+    container_name: "${CONTAINER_NAME:-nest-app-prod}"
+    ports:
+      - "${EXPOSE_PORT:-3000}:${PORT:-3000}"
+    environment:
+      NODE_ENV: production
+    networks:
+      - prod-network
+
+networks:
+  prod-network:
+    external: true
+    name: sql-server_default # red donde está la BD

@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'prod', 'cert', 'test1', 'test2'],
+            description: 'Seleccione el entorno/instancia a desplegar'
+        )
+        string(
+            name: 'EXPOSE_PORT',
+            defaultValue: '3000',
+            description: 'Puerto externo para exponer la aplicación en el host'
+        )
+    }
+
+    environment {
+        NODE_ENV = 'production'
+        PORT = '3000'
+        EXPOSE_PORT = "${params.EXPOSE_PORT}"  // puerto externo configurable
+
+        // Credenciales de Jenkins
+        DB_USERNAME = credentials("DB_USERNAME_${params.ENVIRONMENT}")
+        DB_PASSWORD = credentials("DB_PASSWORD_${params.ENVIRONMENT}")
+        DB_HOST = credentials("DB_HOST_${params.ENVIRONMENT}")
+        DB_PORT = credentials("DB_PORT_${params.ENVIRONMENT}")
+        DB_DATABASE = credentials("DB_DATABASE_${params.ENVIRONMENT}")
+        DB_TYPE = 'mssql'
+        DB_ENCRYPT = 'false'
+        DB_TRUST_SERVER_CERTIFICATE = 'true'
+        JWT_SECRET = credentials("JWT_SECRET_${params.ENVIRONMENT}")
+        REGISTER_SECRET = credentials("REGISTER_SECRET_${params.ENVIRONMENT}")
+    }
+
+    stages {
+
+        stage('Preparar') {
+            steps {
+                echo "Limpiando contenedores antiguos para entorno ${params.ENVIRONMENT}..."
+                sh """
+                    docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} down --volumes --remove-orphans || true
+                """
+            }
+        }
+
+        stage('Construir imagen') {
+            steps {
+                echo "Construyendo contenedores Docker para ${params.ENVIRONMENT}..."
+                sh """
+                    docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} build --no-cache
+                """
+            }
+        }
+
+        stage('Levantar contenedores') {
+            steps {
+                echo "Levantando contenedores para ${params.ENVIRONMENT}..."
+                sh """
+                    docker compose -f docker-core.yml -f docker-${params.ENVIRONMENT}.yml -p ${params.ENVIRONMENT} up -d
+                """
+            }
+        }
+
+        stage('Verificar contenedores') {
+            steps {
+                echo "Contenedores activos para ${params.ENVIRONMENT}:"
+                sh "docker ps"
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo "Pipeline completado correctamente. App levantada en ${params.ENVIRONMENT}."
+        }
+        failure {
+            echo "Pipeline falló. Revisa los logs de Jenkins y Docker."
+        }
+    }
+}

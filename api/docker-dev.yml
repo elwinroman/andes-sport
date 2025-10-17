@@ -1,0 +1,15 @@
+services:
+  nest-app:
+    container_name: "${CONTAINER_NAME:-nest-app-dev}"
+    ports:
+      - "${EXPOSE_PORT:-3210}:${PORT:-3000}"
+    env_file:
+      - .env 
+    environment:
+      NODE_ENV: development
+    networks:
+      - dev-network
+
+networks:
+  dev-network:
+    driver: bridge

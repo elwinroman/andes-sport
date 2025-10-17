@@ -342,3 +342,20 @@ pnpm lint
 # Formateo
 pnpm format
 ```
+
+
+## Levantar contenedores docker
+Dev local
+```bash
+docker compose -f docker-core.yml -f docker-dev.yml -p dev up -d --build
+```
+
+Producción VPS
+```bash
+docker compose -f docker-core.yml -f docker-prod.yml -p prod up -d --build
+```
+
+Nueva instancia en VPS
+```bash
+docker compose -f docker-core.yml -f docker-prod.yml -p cert up -d --build
+```
