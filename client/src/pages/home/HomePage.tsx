@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import { Card } from '@/components/Card'
 import { FutbolIcon } from '@/icons/FutbolIcon'
 import { VoleyIcon } from '@/icons/VoleyIcon'
-import { SPORT_IDS } from '@/pages/partidos/constants/sportIds'
 import { getAllEquiposWithoutPlayersService } from '@/services/equipo.service'
 
 import { HeroPage } from './components/HeroPage'
@@ -36,7 +35,6 @@ const itemVariants = {
 export function HomePage() {
   const [equiposFutbol, setEquiposFutbol] = useState(0)
   const [equiposVoley, setEquiposVoley] = useState(0)
-  const [equiposGincana, setEquiposGincana] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -45,14 +43,10 @@ export function HomePage() {
         const { call } = getAllEquiposWithoutPlayersService()
         const response = await call
 
-        // Filtrar equipos por deporte
-        const futbol = response.data.filter((equipo) => equipo.cDetalle === String(SPORT_IDS.FUTBOL))
-        const voley = response.data.filter((equipo) => equipo.cDetalle === String(SPORT_IDS.VOLEY))
-        const gincana = response.data.filter((equipo) => equipo.cDetalle === 'gincana')
+        setEquiposFutbol(response.data.length)
+        setEquiposVoley(response.data.length)
 
-        setEquiposFutbol(futbol.length)
-        setEquiposVoley(voley.length)
-        setEquiposGincana(gincana.length)
+        console.log(response)
       } catch (error) {
         console.error('Error al cargar equipos:', error)
       } finally {
@@ -154,7 +148,7 @@ export function HomePage() {
           </Link>
 
           {/* Gincana */}
-          <Link to="/gincana">
+          {/* <Link to="/gincana">
             <motion.div
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
@@ -182,7 +176,7 @@ export function HomePage() {
                 </div>
               </article>
             </motion.div>
-          </Link>
+          </Link> */}
         </div>
 
         {/* Sección de Reglamento */}
@@ -198,7 +192,7 @@ export function HomePage() {
                   Consulta las reglas oficiales de cada disciplina deportiva y las normas generales del campeonato.
                 </p>
                 <motion.a
-                  href="/bases-qa-campeonato.pdf"
+                  href="/bases-qa-campeonato-v1.1.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-full sm:w-auto gap-2 px-4 py-2 text-sm font-semibold text-white transition-colors rounded-md bg-brand-cyan hover:bg-brand-cyan/90"
