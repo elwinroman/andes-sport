@@ -1,14 +1,19 @@
 import { Clock, Flag, Pencil, Play, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import useFetchAndLoad from '@/hooks/useFetchAndLoad'
 import { getMatchStatusColor, getMatchStatusLabel, MATCH_STATUS, type MatchStatusType } from '@/pages/partidos/constants/matchStatus'
+import { type DetallesFutbolApiResponse, getDetallesFutbolByPartidoService } from '@/services/detalles-futbol.service'
+import { type DetallesVoleyApiResponse, getDetallesVoleyByPartidoService } from '@/services/detalles-voley.service'
 import { formatTimeLocal } from '@/utils/date.util'
 
 import type { Match } from '../hooks/useMatchManager'
 import { EditMatchModal } from './EditMatchModal'
 import { FinishMatchDialog } from './FinishMatchDialog'
+import { FutbolScoreManager } from './FutbolScoreManager'
 import { StartMatchDialog } from './StartMatchDialog'
+import { VoleyScoreManager } from './VoleyScoreManager'
 
 interface MatchCardProps {
   match: Match
@@ -24,9 +29,45 @@ export function MatchCard({ match, index, onDelete, onEdit, onStart, onFinish }:
   const [isStartDialogOpen, setIsStartDialogOpen] = useState(false)
   const [isFinishDialogOpen, setIsFinishDialogOpen] = useState(false)
 
+  // Estados para los detalles del partido
+  const [detallesFutbol, setDetallesFutbol] = useState<DetallesFutbolApiResponse | null>(null)
+  const [detallesVoley, setDetallesVoley] = useState<DetallesVoleyApiResponse[]>([])
+  const [isLoadingDetalles, setIsLoadingDetalles] = useState(false)
+
+  const { callEndpoint: fetchDetallesFutbol } = useFetchAndLoad<DetallesFutbolApiResponse>()
+  const { callEndpoint: fetchDetallesVoley } = useFetchAndLoad<DetallesVoleyApiResponse[]>()
+
   const sportName = match.sport === 'futbol' ? 'Fútbol' : 'Vóley'
   // Convertir UTC a hora local del usuario
   const localTime = formatTimeLocal(match.eventDate)
+
+  // Cargar detalles cuando el partido está en curso
+  useEffect(() => {
+    const loadDetalles = async () => {
+      if (match.status !== MATCH_STATUS.EN_CURSO) {
+        return
+      }
+
+      try {
+        setIsLoadingDetalles(true)
+
+        if (match.sport === 'futbol') {
+          const response = await fetchDetallesFutbol(getDetallesFutbolByPartidoService(match.id))
+          setDetallesFutbol(response.data)
+        } else if (match.sport === 'voley') {
+          const response = await fetchDetallesVoley(getDetallesVoleyByPartidoService(match.id))
+          setDetallesVoley(response.data)
+        }
+      } catch (error) {
+        console.error('Error al cargar detalles del partido:', error)
+      } finally {
+        setIsLoadingDetalles(false)
+      }
+    }
+
+    loadDetalles()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [match.id, match.status, match.sport])
 
   const handleEdit = async (matchId: number, newDate: string) => {
     await onEdit(matchId, newDate)
@@ -137,6 +178,35 @@ export function MatchCard({ match, index, onDelete, onEdit, onStart, onFinish }:
             )}
           </div>
         </div>
+
+        {/* Marcador para partidos EN_CURSO */}
+        {match.status === MATCH_STATUS.EN_CURSO && (
+          <>
+            {match.sport === 'futbol' && detallesFutbol && !isLoadingDetalles && (
+              <FutbolScoreManager
+                matchId={match.id}
+                team1Name={match.team1.nombre}
+                team2Name={match.team2.nombre}
+                initialGolesLocal={detallesFutbol.golesEquipoLocal}
+                initialGolesVisitante={detallesFutbol.golesEquipoVisitante}
+              />
+            )}
+            {match.sport === 'voley' && detallesVoley.length === 2 && !isLoadingDetalles && (
+              <VoleyScoreManager
+                matchId={match.id}
+                team1Name={match.team1.nombre}
+                team2Name={match.team2.nombre}
+                initialSet1Local={detallesVoley.find((d) => d.numeroSet === 1)?.puntosEquipoLocal || 0}
+                initialSet1Visitante={detallesVoley.find((d) => d.numeroSet === 1)?.puntosEquipoVisitante || 0}
+                initialSet2Local={detallesVoley.find((d) => d.numeroSet === 2)?.puntosEquipoLocal || 0}
+                initialSet2Visitante={detallesVoley.find((d) => d.numeroSet === 2)?.puntosEquipoVisitante || 0}
+              />
+            )}
+            {isLoadingDetalles && (
+              <div className="p-4 mt-3 text-sm text-center border-t text-slate-600 bg-slate-100 border-slate-300">Cargando marcador...</div>
+            )}
+          </>
+        )}
       </div>
     </>
   )

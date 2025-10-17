@@ -40,3 +40,9 @@ export const createEventDateUTC = (): Date => {
   // Date.UTC crea una fecha en UTC sin conversiones de zona horaria
   return new Date(Date.UTC(EVENT_DATE.YEAR, EVENT_DATE.MONTH, EVENT_DATE.DAY, EVENT_DATE.HOUR, EVENT_DATE.MINUTE, 0, 0))
 }
+
+// Configuración de vóley
+export const VOLEY_CONFIG = {
+  MAX_POINTS_PER_SET: 15, // Máximo de puntos por set
+  TOTAL_SETS: 2, // Total de sets en el partido
+} as const

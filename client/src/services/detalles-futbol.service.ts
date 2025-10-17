@@ -47,3 +47,55 @@ export const createDetallesFutbolService = (params: CreateDetallesFutbolRequest)
     controller,
   }
 }
+
+export interface UpdateDetallesFutbolRequest {
+  golesEquipoLocal: number
+  golesEquipoVisitante: number
+}
+
+export const updateDetallesFutbolService = (
+  idPartido: number,
+  params: UpdateDetallesFutbolRequest,
+): AxiosCall<DetallesFutbolApiResponse> => {
+  const controller = loadAbort()
+
+  const adapterCall = api
+    .patch<DetallesFutbolApiResponse>(`/detalles-futbol/${idPartido}`, params, {
+      signal: controller.signal,
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      return {
+        ...response,
+        data: response.data,
+      }
+    })
+
+  return {
+    call: adapterCall,
+    controller,
+  }
+}
+
+export const getDetallesFutbolByPartidoService = (idPartido: number): AxiosCall<DetallesFutbolApiResponse> => {
+  const controller = loadAbort()
+
+  const adapterCall = api
+    .get<DetallesFutbolApiResponse>(`/detalles-futbol/${idPartido}`, {
+      signal: controller.signal,
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      return {
+        ...response,
+        data: response.data,
+      }
+    })
+
+  return {
+    call: adapterCall,
+    controller,
+  }
+}

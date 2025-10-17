@@ -60,3 +60,56 @@ export const createBulkDetallesVoleyService = (params: BulkDetallesVoleyRequest)
     controller,
   }
 }
+
+export interface UpdateDetallesVoleyRequest {
+  puntosEquipoLocal: number
+  puntosEquipoVisitante: number
+}
+
+export const updateDetallesVoleyService = (
+  idPartido: number,
+  numeroSet: number,
+  params: UpdateDetallesVoleyRequest,
+): AxiosCall<DetallesVoleyApiResponse> => {
+  const controller = loadAbort()
+
+  const adapterCall = api
+    .patch<DetallesVoleyApiResponse>(`/detalles-voley/${idPartido}/${numeroSet}`, params, {
+      signal: controller.signal,
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      return {
+        ...response,
+        data: response.data,
+      }
+    })
+
+  return {
+    call: adapterCall,
+    controller,
+  }
+}
+
+export const getDetallesVoleyByPartidoService = (idPartido: number): AxiosCall<DetallesVoleyApiResponse[]> => {
+  const controller = loadAbort()
+
+  const adapterCall = api
+    .get<DetallesVoleyApiResponse[]>(`/detalles-voley/partido/${idPartido}`, {
+      signal: controller.signal,
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      return {
+        ...response,
+        data: response.data,
+      }
+    })
+
+  return {
+    call: adapterCall,
+    controller,
+  }
+}
