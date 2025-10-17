@@ -51,6 +51,7 @@ export function useMatchManager() {
   const { callEndpoint: fetchPartidos } = useFetchAndLoad<PartidoApiResponse[]>()
   const { callEndpoint: createDetallesFutbol } = useFetchAndLoad<DetallesFutbolApiResponse>()
   const { callEndpoint: createBulkDetallesVoley } = useFetchAndLoad<BulkDetallesVoleyResponse>()
+  const { callEndpoint: deletePartido } = useFetchAndLoad<void>()
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -157,7 +158,7 @@ export function useMatchManager() {
       const updatedMatches = matches.filter((m) => m.id !== matchId)
       setMatches(updatedMatches)
 
-      deletePartidoService(match.id)
+      await deletePartido(deletePartidoService(match.id))
     }
   }
 
