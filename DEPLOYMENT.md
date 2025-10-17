@@ -14,9 +14,10 @@ qa-sports/
 │   ├── .env.example           # Ejemplo de variables de entorno
 │   ├── vercel-ignore-build.sh # Script para ignorar builds innecesarios
 │   └── package.json
-├── api/                       # Backend (NestJS)
+├── api/                       # Backend (NestJS) - Ignorado por Vercel
 │   ├── src/
 │   └── package.json
+├── .vercelignore              # Excluye api/ del build de Vercel
 └── vercel.json                # Configuración de Vercel para el frontend
 ```
 
@@ -35,7 +36,10 @@ El archivo `vercel.json` en la raíz está configurado para el monorepo:
 }
 ```
 
-**Optimización de Builds**: El `ignoreCommand` ejecuta un script que evita builds innecesarios cuando solo hay cambios en la carpeta `api/`. Esto ahorra tiempo y recursos de build.
+**Optimización de Builds**:
+- El `ignoreCommand` ejecuta un script que evita builds innecesarios cuando solo hay cambios en la carpeta `api/`
+- El archivo `.vercelignore` excluye completamente la carpeta `api/` del proceso de build de Vercel
+- Esto ahorra tiempo y recursos de build, y evita conflictos con dependencias del backend
 
 ### 2. Pasos para Desplegar
 
@@ -184,10 +188,13 @@ Para el backend NestJS, considera estas opciones:
 
 5. **Rate Limiting**: Considera implementar rate limiting en tu API.
 
-6. **Ignored Builds**: El script `vercel-ignore-build.sh` evita builds cuando solo cambia `api/`:
-   - ✅ Cambios en `client/` → Build procede
-   - ✅ Cambios en archivos raíz → Build procede
-   - ⏭️ Solo cambios en `api/` → Build se omite (ahorra tiempo y recursos)
+6. **Ignored Builds y carpeta API**:
+   - El archivo `.vercelignore` excluye completamente la carpeta `api/` de Vercel
+   - El script `vercel-ignore-build.sh` evita builds cuando solo cambia `api/`:
+     - ✅ Cambios en `client/` → Build procede
+     - ✅ Cambios en archivos raíz → Build procede
+     - ⏭️ Solo cambios en `api/` → Build se omite (ahorra tiempo y recursos)
+   - **Importante**: Vercel solo procesa el frontend. El backend debe desplegarse por separado.
 
 ## 🐛 Troubleshooting
 

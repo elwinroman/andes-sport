@@ -1,0 +1,9 @@
+# Ignorar completamente la carpeta api en Vercel
+api/
+api/**
+
+# Ignorar archivos SQL
+*.sql
+
+# Ignorar configuración de Claude
+.claude/
