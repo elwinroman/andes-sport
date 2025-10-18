@@ -16,7 +16,7 @@ import {
 
 import { getMatchConfiguration, hasConfigurationForTeams, type SportType } from '../constants/matchConfigHelper'
 import { MATCH_STATUS } from '../constants/matchStatus'
-import { EVENT_DATE, MATCH_INTERVAL, SPORT_IDS, SPORT_TEAM_CONFIG } from '../constants/sportIds'
+import { EVENT_DATE, MATCH_INTERVAL, SPORT_IDS } from '../constants/sportIds'
 
 export interface Team {
   id: number
@@ -40,7 +40,7 @@ export function useMatchManager() {
   const [matches, setMatches] = useState<Match[]>([])
   const [allMatches, setAllMatches] = useState<Match[]>([]) // Todos los partidos de ambos deportes
   const [isInitialLoading, setIsInitialLoading] = useState(true)
-  const [selectedSport, setSelectedSport] = useState<SportType>('voley')
+  const [selectedSport, setSelectedSport] = useState<SportType>('futbol')
   const [teamAssignments, setTeamAssignments] = useState<Map<number, Team> | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -341,31 +341,9 @@ export function useMatchManager() {
     // Si ya asignamos todos, no hacer nada
     if (nextNumber > maxTeamNumber) return
 
-    // Si es vóley y el siguiente número es 1, asignar el equipo fijo
-    if (selectedSport === 'voley' && nextNumber === 1) {
-      const fixedTeam = availableTeams.find((team) => team.id === SPORT_TEAM_CONFIG.VOLEY.FIXED_TEAM_ID)
-      if (fixedTeam) {
-        const newAssignments = new Map(currentAssignments)
-        newAssignments.set(1, fixedTeam)
-        setTeamAssignments(newAssignments)
-        return
-      }
-    }
-
-    // Filtrar equipos según el deporte
-    let teamsToAssign = availableTeams
-
-    if (selectedSport === 'futbol') {
-      // Para fútbol: excluir el equipo con ID fijo (equipo 01)
-      teamsToAssign = availableTeams.filter((team) => team.id !== SPORT_TEAM_CONFIG.FUTBOL.FIXED_TEAM_ID)
-    } else if (selectedSport === 'voley') {
-      // Para vóley: excluir el equipo fijo (ya que se asignó a la posición #1)
-      teamsToAssign = availableTeams.filter((team) => team.id !== SPORT_TEAM_CONFIG.VOLEY.FIXED_TEAM_ID)
-    }
-
     // Obtener equipos aún no asignados
     const assignedTeams = Array.from(currentAssignments.values())
-    const unassignedTeams = teamsToAssign.filter((team) => !assignedTeams.find((t) => t.id === team.id))
+    const unassignedTeams = availableTeams.filter((team) => !assignedTeams.find((t) => t.id === team.id))
 
     if (unassignedTeams.length === 0) return
 
@@ -390,42 +368,14 @@ export function useMatchManager() {
     }
 
     try {
-      // Filtrar equipos según el deporte
-      let teamsToAssign = availableTeams
-      let fixedTeam: Team | null = null
+      // Aleatorizar equipos
+      const shuffledTeams = [...availableTeams].sort(() => Math.random() - 0.5)
 
-      if (selectedSport === 'futbol') {
-        // Para fútbol: excluir el equipo con ID fijo (equipo 01)
-        teamsToAssign = availableTeams.filter((team) => team.id !== SPORT_TEAM_CONFIG.FUTBOL.FIXED_TEAM_ID)
-      } else if (selectedSport === 'voley') {
-        // Para vóley: separar el equipo fijo para la posición #1
-        fixedTeam = availableTeams.find((team) => team.id === SPORT_TEAM_CONFIG.VOLEY.FIXED_TEAM_ID) || null
-        teamsToAssign = availableTeams.filter((team) => team.id !== SPORT_TEAM_CONFIG.VOLEY.FIXED_TEAM_ID)
-      }
-
-      // Obtener los números únicos usados en la configuración
-      const uniqueNumbers = Array.from(new Set(config.flat())).sort((a, b) => a - b)
-
-      // Aleatorizar equipos disponibles (sin el fijo)
-      const shuffledTeams = [...teamsToAssign].sort(() => Math.random() - 0.5)
-
-      // Crear un mapa de número -> equipo usando los números de la configuración
+      // Crear un mapa de número -> equipo (los números en la config empiezan en 1)
       const newAssignments = new Map<number, Team>()
-
-      if (selectedSport === 'voley' && fixedTeam) {
-        // En vóley: asignar el equipo fijo a la posición #1
-        newAssignments.set(1, fixedTeam)
-        // Asignar los demás equipos aleatoriamente a las posiciones restantes
-        const remainingNumbers = uniqueNumbers.filter((num) => num !== 1)
-        remainingNumbers.forEach((configNumber, index) => {
-          newAssignments.set(configNumber, shuffledTeams[index])
-        })
-      } else {
-        // Para fútbol o si no hay equipo fijo: asignar aleatoriamente a todas las posiciones
-        uniqueNumbers.forEach((configNumber, index) => {
-          newAssignments.set(configNumber, shuffledTeams[index])
-        })
-      }
+      shuffledTeams.forEach((team, index) => {
+        newAssignments.set(index + 1, team)
+      })
 
       setTeamAssignments(newAssignments)
     } catch (error) {
