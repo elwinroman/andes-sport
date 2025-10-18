@@ -25,11 +25,28 @@ export class JugadorService {
     return await this.jugadorRepository.save(jugador)
   }
 
-  async findAll(): Promise<Jugador[]> {
+  async findAll(idEquipo?: number): Promise<Jugador[]> {
+    if (idEquipo !== undefined) {
+      return await this.findByEquipo(idEquipo)
+    }
+
     return await this.jugadorRepository.find({
       where: { lVigente: true },
       order: { dFechaRegistra: 'DESC' },
     })
+  }
+
+  async findByEquipo(idEquipo: number): Promise<Jugador[]> {
+    const jugadores = await this.jugadorRepository
+      .createQueryBuilder('jugador')
+      .innerJoin('jugador.equipoJugadores', 'equipoJugador', 'equipoJugador.lVigente = :vigente', { vigente: true })
+      .where('jugador.lVigente = :vigente', { vigente: true })
+      .andWhere('equipoJugador.idEquipo = :idEquipo', { idEquipo })
+      .orderBy('jugador.cApellidoJugador', 'ASC')
+      .addOrderBy('jugador.cNombreJugador', 'ASC')
+      .getMany()
+
+    return jugadores
   }
 
   async findOne(id: number): Promise<Jugador> {

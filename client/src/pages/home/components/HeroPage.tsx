@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Calendar, Navigation } from 'lucide-react'
+import { Award, Calendar, Navigation } from 'lucide-react'
 
 import { Navbar } from '@/layout/Navbar'
 
@@ -73,6 +73,21 @@ export function HeroPage() {
                 5
               </motion.span>
             </h2>
+
+            {/* Organizador */}
+            <motion.div
+              className="flex items-center justify-center gap-2 mt-2 sm:mt-3"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <div className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2.5 bg-gradient-to-r from-brand-cyan/20 via-brand-magenta/20 to-accent/20 backdrop-blur-sm border border-white/20 rounded-full">
+                <Award size={18} className="text-brand-cyan shrink-0" />
+                <p className="text-xs sm:text-sm font-semibold text-white/90 tracking-wide">
+                  Organizado por el <span className="text-brand-cyan">Departamento de Calidad de Software</span>
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
 
           {/* Fecha y lugar */}

@@ -1,19 +1,15 @@
-import { RotateCcw } from 'lucide-react'
-
 import { Button } from '@/components/ui/button'
 
 import { type SportType } from '../constants/matchConfigHelper'
 
 interface MatchHeaderProps {
-  canReset: boolean
   canUseConfiguration: boolean
   selectedSport: SportType
   hasMatches: boolean
-  onReset: () => void
   onSportChange: (sport: SportType) => void
 }
 
-export function MatchHeader({ canReset, canUseConfiguration, selectedSport, hasMatches, onReset, onSportChange }: MatchHeaderProps) {
+export function MatchHeader({ canUseConfiguration, selectedSport, hasMatches, onSportChange }: MatchHeaderProps) {
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
@@ -21,12 +17,6 @@ export function MatchHeader({ canReset, canUseConfiguration, selectedSport, hasM
           <h1 className="flex items-center gap-3 mb-2 text-xl font-bold text-primary font-montserrat">Administrador de Partidos</h1>
           <p className="text-sm text-secondary">Crea partidos usando configuraciones predefinidas de fixtures</p>
         </div>
-        {canReset && (
-          <Button onClick={onReset} variant="outline">
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Reiniciar Todo
-          </Button>
-        )}
       </div>
 
       {/* Selector de Deporte - Solo visible cuando hay partidos generados */}

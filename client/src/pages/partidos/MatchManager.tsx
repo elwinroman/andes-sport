@@ -22,7 +22,6 @@ export function MatchManager() {
     updateMatch,
     startMatch,
     finishMatch,
-    resetAll,
     generateMatchesFromConfig,
     assignNextTeam,
     randomizeTeamAssignments,
@@ -53,10 +52,6 @@ export function MatchManager() {
     setMatchToDelete(null)
   }
 
-  const handleReset = () => {
-    resetAll()
-  }
-
   const handleGenerateFromConfig = () => {
     generateMatchesFromConfig()
   }
@@ -70,11 +65,9 @@ export function MatchManager() {
     <div className="py-4">
       <div className="mx-auto max-w-7xl">
         <MatchHeader
-          canReset={matches.length > 0}
           canUseConfiguration={canUseConfiguration && matches.length === 0}
           selectedSport={selectedSport}
           hasMatches={matches.length > 0}
-          onReset={handleReset}
           onSportChange={setSelectedSport}
         />
 

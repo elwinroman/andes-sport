@@ -124,3 +124,25 @@ export const asignarJugadorAEquipoService = (idEquipo: number, idJugador: number
     controller,
   }
 }
+
+export const getJugadoresByEquipoService = (idEquipo: number): AxiosCall<JugadorSinEquipoApiResponse[]> => {
+  const controller = loadAbort()
+
+  const adapterCall = api
+    .get<JugadorSinEquipoApiResponse[]>(`/jugadores?idEquipo=${idEquipo}`, {
+      signal: controller.signal,
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      return {
+        ...response,
+        data: response.data,
+      }
+    })
+
+  return {
+    call: adapterCall,
+    controller,
+  }
+}
