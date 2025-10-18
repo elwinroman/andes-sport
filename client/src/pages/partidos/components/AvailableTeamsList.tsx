@@ -1,26 +1,14 @@
-import { type SportType } from '../constants/matchConfigHelper'
-import { SPORT_TEAM_CONFIG } from '../constants/sportIds'
 import { type Team } from '../hooks/useMatchManager'
 
 interface AvailableTeamsListProps {
   availableTeams: Team[]
   teamAssignments: Map<number, Team> | null
-  selectedSport: SportType
 }
 
-export function AvailableTeamsList({ availableTeams, teamAssignments, selectedSport }: AvailableTeamsListProps) {
-  // Filtrar equipos según el deporte seleccionado
-  let teamsForSport = availableTeams
-
-  if (selectedSport === 'futbol') {
-    // Para fútbol: excluir el equipo con ID fijo
-    teamsForSport = availableTeams.filter((team) => team.id !== SPORT_TEAM_CONFIG.FUTBOL.FIXED_TEAM_ID)
-  }
-  // Para vóley: mostrar todos los equipos disponibles (incluido el equipo con ID 1)
-
+export function AvailableTeamsList({ availableTeams, teamAssignments }: AvailableTeamsListProps) {
   // Filtrar equipos aún no asignados
   const assignedTeams = Array.from(teamAssignments?.values() || [])
-  const unassignedTeams = teamsForSport.filter((team) => !assignedTeams.find((t) => t.id === team.id))
+  const unassignedTeams = availableTeams.filter((team) => !assignedTeams.find((t) => t.id === team.id))
 
   if (unassignedTeams.length === 0) {
     return null
