@@ -17,7 +17,7 @@ import {
 import { getTop2Teams } from '@/utils/clasificacion.util'
 import { useStore } from '@/zustand/store'
 
-import { getMatchConfiguration, hasConfigurationForTeams, type SportType } from '../constants/matchConfigHelper'
+import { getMatchConfiguration, hasConfigurationForTeams } from '../constants/matchConfigHelper'
 import { MATCH_STATUS } from '../constants/matchStatus'
 import { EVENT_DATE, MATCH_INTERVAL, SPORT_IDS } from '../constants/sportIds'
 
