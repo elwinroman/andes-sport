@@ -85,9 +85,13 @@ La API estará disponible en `http://localhost:3000/api`
 
 ### Jugadores
 - `GET /api/jugadores` - Obtener todos los jugadores
+- `GET /api/jugadores?idEquipo={id}` - Filtrar jugadores por equipo (query parameter)
+- `GET /api/jugadores/sin-equipo` - Obtener jugadores sin equipo asignado
 - `GET /api/jugadores/:id` - Obtener un jugador por ID
 - `POST /api/jugadores` - Crear un nuevo jugador
+- `POST /api/jugadores/con-equipo` - Crear un jugador y asignarlo a un equipo
 - `PATCH /api/jugadores/:id` - Actualizar un jugador
+- `PATCH /api/jugadores/:id/con-equipo` - Actualizar un jugador y su equipo
 - `DELETE /api/jugadores/:id` - Eliminar un jugador (soft delete)
 
 **Ejemplo de creación:**
@@ -97,6 +101,28 @@ La API estará disponible en `http://localhost:3000/api`
   "cApellidoJugador": "Messi",
   "lVigente": true
 }
+```
+
+**Ejemplo de creación con equipo:**
+```json
+{
+  "cNombreJugador": "Lionel",
+  "cApellidoJugador": "Messi",
+  "idEquipo": 1,
+  "lVigente": true
+}
+```
+
+**Ejemplos de uso del filtro:**
+```bash
+# Obtener todos los jugadores
+GET /api/jugadores
+
+# Obtener jugadores del equipo con ID 1
+GET /api/jugadores?idEquipo=1
+
+# Obtener jugadores sin equipo asignado
+GET /api/jugadores/sin-equipo
 ```
 
 ### Estados de Partido
@@ -116,6 +142,9 @@ La API estará disponible en `http://localhost:3000/api`
 
 ### Partidos
 - `GET /api/partidos` - Obtener todos los partidos (incluye relaciones)
+- `GET /api/partidos?idDeporte={id}` - Filtrar partidos por deporte (query parameter)
+- `GET /api/partidos?lEtapaFinal={true|false}` - Filtrar partidos por etapa final (query parameter)
+- `GET /api/partidos?idDeporte={id}&lEtapaFinal=true` - Combinar filtros de deporte y etapa final
 - `GET /api/partidos/:id` - Obtener un partido por ID
 - `POST /api/partidos` - Crear un nuevo partido
 - `POST /api/partidos/bulk` - Crear múltiples partidos en una sola operación
@@ -133,8 +162,27 @@ La API estará disponible en `http://localhost:3000/api`
   "dFechaInicio": "2025-01-15T20:00:00Z",
   "dFechaFin": "2025-01-15T22:00:00Z",
   "idEstado": 1,
+  "lEtapaFinal": false,
   "lVigente": true
 }
+```
+
+**Ejemplos de uso de filtros:**
+```bash
+# Obtener todos los partidos
+GET /api/partidos
+
+# Obtener partidos de un deporte específico
+GET /api/partidos?idDeporte=1
+
+# Obtener solo partidos de etapa final (finales)
+GET /api/partidos?lEtapaFinal=true
+
+# Obtener partidos de fase regular (no finales)
+GET /api/partidos?lEtapaFinal=false
+
+# Obtener partidos de etapa final de un deporte específico
+GET /api/partidos?idDeporte=1&lEtapaFinal=true
 ```
 
 **Nota:** Los campos `dFechaInicio` y `dFechaFin` son opcionales y permiten registrar el inicio y fin real del partido.

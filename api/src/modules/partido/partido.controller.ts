@@ -24,8 +24,10 @@ export class PartidoController {
   }
 
   @Get()
-  findAll(@Query('idDeporte', new ParseIntPipe({ optional: true })) idDeporte?: number) {
-    return this.partidoService.findAll(idDeporte)
+  findAll(@Query('idDeporte', new ParseIntPipe({ optional: true })) idDeporte?: number, @Query('lEtapaFinal') lEtapaFinal?: string) {
+    // Convertir string a boolean si viene el parámetro
+    const esEtapaFinal = lEtapaFinal === 'true' ? true : lEtapaFinal === 'false' ? false : undefined
+    return this.partidoService.findAll(idDeporte, esEtapaFinal)
   }
 
   @Get(':id')
