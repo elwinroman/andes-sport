@@ -563,6 +563,84 @@ export function useMatchManager() {
     }
   }
 
+  const createFinalMatch = async (): Promise<void> => {
+    try {
+      setIsSaving(true)
+      setSaveError(null)
+
+      // Obtener partidos del deporte seleccionado de la API
+      const response = await fetchPartidos(getAllPartidosService(selectedSport === 'futbol' ? SPORT_IDS.FUTBOL : SPORT_IDS.VOLEY))
+      const partidosData = response.data
+
+      // Obtener top 2 equipos usando la lógica de clasificación
+      const top2 = getTop2Teams(partidosData, selectedSport)
+
+      if (!top2) {
+        throw new Error('No se pudieron obtener los 2 primeros equipos de la clasificación')
+      }
+
+      const [primerLugar, segundoLugar] = top2
+
+      // Crear el partido final
+      const now = new Date().toISOString()
+
+      const partidoFinalResponse = await createPartido(
+        createPartidoService({
+          idDeporte: selectedSport === 'futbol' ? SPORT_IDS.FUTBOL : SPORT_IDS.VOLEY,
+          idEquipoLocal: primerLugar.idEquipo,
+          idEquipoVisitante: segundoLugar.idEquipo,
+          dFechaEvento: now,
+          idEstado: MATCH_STATUS.PROGRAMADO,
+          lEtapaFinal: true,
+        }),
+      )
+
+      console.log(`✅ Partido final creado: ${primerLugar.name} vs ${segundoLugar.name}`)
+
+      // Agregar el partido final a la lista local
+      const eventDate = new Date(partidoFinalResponse.data.dFechaEvento)
+      const hours = eventDate.getUTCHours().toString().padStart(2, '0')
+      const minutes = eventDate.getUTCMinutes().toString().padStart(2, '0')
+
+      const finalMatch: Match = {
+        id: partidoFinalResponse.data.idPartido,
+        team1: {
+          id: primerLugar.idEquipo,
+          nombre: primerLugar.name,
+          detalles: '',
+        },
+        team2: {
+          id: segundoLugar.idEquipo,
+          nombre: segundoLugar.name,
+          detalles: '',
+        },
+        time: `${hours}:${minutes}`,
+        sport: selectedSport,
+        status: MATCH_STATUS.PROGRAMADO,
+        eventDate: partidoFinalResponse.data.dFechaEvento,
+        isFinal: true,
+      }
+
+      // Actualizar allMatches y matches
+      setAllMatches((prev) => [...prev, finalMatch])
+      setMatches((prev) => [...prev, finalMatch])
+
+      setIsSaving(false)
+    } catch (error) {
+      setIsSaving(false)
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al crear el partido final'
+      setSaveError(errorMessage)
+      console.error('Error al crear partido final:', error)
+      throw error
+    }
+  }
+
+  const areAllMatchesFinished = (): boolean => {
+    const currentSportMatches = matches.filter((m) => m.sport === selectedSport)
+    if (currentSportMatches.length === 0) return false
+    return currentSportMatches.every((m) => m.status === MATCH_STATUS.FINALIZADO)
+  }
+
   const canUseConfiguration = hasConfigurationForTeams(availableTeams.length)
 
   const currentConfiguration = availableTeams.length > 0 ? getMatchConfiguration(availableTeams.length, selectedSport) : null
