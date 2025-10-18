@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { useStore } from '@/zustand/store'
 
 import { type SportType } from '../constants/matchConfigHelper'
 
@@ -10,6 +11,12 @@ interface MatchHeaderProps {
 }
 
 export function MatchHeader({ canUseConfiguration, selectedSport, hasMatches, onSportChange }: MatchHeaderProps) {
+  const setSelectedFixtureSport = useStore((state) => state.setSelectedFixtureSport)
+
+  const handleSportChange = (sport: SportType) => {
+    setSelectedFixtureSport(sport)
+    onSportChange(sport)
+  }
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
@@ -25,7 +32,7 @@ export function MatchHeader({ canUseConfiguration, selectedSport, hasMatches, on
           <span className="text-sm font-semibold text-secondary">Ver Fixture de:</span>
           <div className="flex gap-2">
             <Button
-              onClick={() => onSportChange('futbol')}
+              onClick={() => handleSportChange('futbol')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                 selectedSport === 'futbol' ? 'bg-primary text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
@@ -33,7 +40,7 @@ export function MatchHeader({ canUseConfiguration, selectedSport, hasMatches, on
               Fútbol
             </Button>
             <Button
-              onClick={() => onSportChange('voley')}
+              onClick={() => handleSportChange('voley')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                 selectedSport === 'voley' ? 'bg-primary text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
