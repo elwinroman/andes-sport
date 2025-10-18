@@ -38,6 +38,10 @@ export class CreatePartidoDto {
   idEstado: number
 
   @IsOptional()
+  @IsBoolean({ message: 'lEtapaFinal debe ser verdadero o falso' })
+  lEtapaFinal?: boolean
+
+  @IsOptional()
   @IsBoolean({ message: 'lVigente debe ser verdadero o falso' })
   lVigente?: boolean
 }

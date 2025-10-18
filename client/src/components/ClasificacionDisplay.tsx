@@ -1,10 +1,12 @@
 import { Card } from '@components/Card'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { CircleIcon } from '@/icons/CircleIcon'
 import { MATCH_STATUS } from '@/pages/partidos/constants/matchStatus'
 import { MATCH_POINTS } from '@/pages/partidos/constants/scoring'
 import { type PartidoApiResponse } from '@/services/partido.service'
+
+import { TeamPlayersPopover } from './TeamPlayersPopover'
 
 interface Props {
   className?: string
@@ -36,6 +38,86 @@ interface TeamStats {
 }
 
 export function ClasificacionDisplay({ className, sportType, partidos, isLoading }: Props) {
+  const [selectedTeam, setSelectedTeam] = useState<{ idEquipo: number; name: string } | null>(null)
+  const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const popoverRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Cerrar popover al hacer click fuera
+  useEffect(() => {
+    if (!isPopoverOpen) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+
+      // Verificar si el click fue en un nombre de equipo
+      if (target.closest('[data-team-name]')) {
+        return
+      }
+
+      // Verificar si el click fue dentro del popover
+      if (popoverRef.current && !popoverRef.current.contains(target)) {
+        setIsPopoverOpen(false)
+        setSelectedTeam(null)
+      }
+    }
+
+    // Usar setTimeout para evitar que el click que abre el popover lo cierre inmediatamente
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+    }, 10)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isPopoverOpen])
+
+  const handleTeamClick = (e: React.MouseEvent<HTMLSpanElement>, team: TeamStats) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Si el mismo equipo está abierto, cerrarlo
+    if (isPopoverOpen && selectedTeam?.idEquipo === team.idEquipo) {
+      setIsPopoverOpen(false)
+      setSelectedTeam(null)
+      return
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect()
+
+    // Posición diferente según el dispositivo
+    if (isMobile) {
+      setPopoverPosition({
+        x: window.innerWidth / 2 - 128,
+        y: rect.bottom + 8,
+      })
+    } else {
+      setPopoverPosition({
+        x: rect.right + 8,
+        y: rect.top,
+      })
+    }
+
+    setSelectedTeam({ idEquipo: team.idEquipo, name: team.name })
+    setIsPopoverOpen(true)
+  }
+
+  const handleClosePopover = () => {
+    setIsPopoverOpen(false)
+    setSelectedTeam(null)
+  }
+
   const teams = useMemo(() => {
     const teamStatsMap = new Map<number, TeamStats>()
     const isFutbol = sportType === 'futbol'
@@ -297,7 +379,13 @@ export function ClasificacionDisplay({ className, sportType, partidos, isLoading
                     <td className="px-2 py-2 font-medium">{team.pos}</td>
                     <td className="px-2 py-2">
                       <div className="flex items-center gap-2 text-nowrap">
-                        <span className="font-medium">{team.name}</span>
+                        <span
+                          data-team-name
+                          className="font-medium cursor-pointer hover:text-brand-cyan transition-colors underline decoration-dotted underline-offset-2 decoration-brand-cyan/30 hover:decoration-brand-cyan"
+                          onClick={(e) => handleTeamClick(e, team)}
+                        >
+                          {team.name}
+                        </span>
                       </div>
                     </td>
                     <td className="px-2 py-2 text-center">{team.pj}</td>
@@ -338,11 +426,24 @@ export function ClasificacionDisplay({ className, sportType, partidos, isLoading
 
           <p>
             {isFutbol
-              ? 'Si dos equipos están empatados en la clasificación, se utilizarán los siguientes métodos de desempate: 1. Diferencia general de goles 2. Mayor cantidad de goles marcados 3. Menor cantidad de goles recibidos 4. Sorteo con moneda'
+              ? 'Si dos equipos están empatados en la clasificación, se utilizarán los siguientes métodos de desempate: 1. Diferencia general de goles 2. Mayor cantidad de goles marcados 4. Sorteo con moneda'
               : 'Si dos equipos están empatados en la clasificación, se utilizarán los siguientes métodos de desempate: 1. Diferencia de sets 2. Sets ganados 3. Diferencia de puntos 4. Puntos a favor'}
           </p>
         </div>
       </div>
+
+      {/* Popover de jugadores */}
+      {selectedTeam && (
+        <TeamPlayersPopover
+          key={selectedTeam.idEquipo}
+          ref={popoverRef}
+          idEquipo={selectedTeam.idEquipo}
+          teamName={selectedTeam.name}
+          isOpen={isPopoverOpen}
+          onClose={handleClosePopover}
+          position={popoverPosition}
+        />
+      )}
     </Card>
   )
 }

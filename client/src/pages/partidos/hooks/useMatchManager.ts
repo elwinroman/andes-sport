@@ -8,11 +8,14 @@ import { getAllEquiposWithoutPlayersService } from '@/services/equipo.service'
 import {
   type BulkPartidosResponse,
   createBulkPartidosService,
+  createPartidoService,
   deletePartidoService,
   getAllPartidosService,
   type PartidoApiResponse,
   updatePartidoService,
 } from '@/services/partido.service'
+import { getTop2Teams } from '@/utils/clasificacion.util'
+import { useStore } from '@/zustand/store'
 
 import { getMatchConfiguration, hasConfigurationForTeams, type SportType } from '../constants/matchConfigHelper'
 import { MATCH_STATUS } from '../constants/matchStatus'
@@ -32,15 +35,18 @@ export interface Match {
   sport: 'futbol' | 'voley'
   status: number
   eventDate: string
+  isFinal?: boolean
 }
 
 export function useMatchManager() {
+  const selectedSport = useStore((state) => state.selectedFixtureSport)
+  const setSelectedSport = useStore((state) => state.setSelectedFixtureSport)
+
   const [allTeams, setAllTeams] = useState<Team[]>([])
   const [availableTeams, setAvailableTeams] = useState<Team[]>([])
   const [matches, setMatches] = useState<Match[]>([])
   const [allMatches, setAllMatches] = useState<Match[]>([]) // Todos los partidos de ambos deportes
   const [isInitialLoading, setIsInitialLoading] = useState(true)
-  const [selectedSport, setSelectedSport] = useState<SportType>('futbol')
   const [teamAssignments, setTeamAssignments] = useState<Map<number, Team> | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -52,6 +58,7 @@ export function useMatchManager() {
   const { callEndpoint: createDetallesFutbol } = useFetchAndLoad<DetallesFutbolApiResponse>()
   const { callEndpoint: createBulkDetallesVoley } = useFetchAndLoad<BulkDetallesVoleyResponse>()
   const { callEndpoint: deletePartido } = useFetchAndLoad<void>()
+  const { callEndpoint: createPartido } = useFetchAndLoad<PartidoApiResponse>()
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -94,6 +101,7 @@ export function useMatchManager() {
               sport: partido.idDeporte === SPORT_IDS.FUTBOL ? 'futbol' : 'voley',
               status: partido.idEstado,
               eventDate: partido.dFechaEvento,
+              isFinal: partido.lEtapaFinal || false,
             }
           })
 
@@ -229,26 +237,55 @@ export function useMatchManager() {
         )
         console.log(`✅ Detalle de fútbol creado para partido ${matchId}`)
       } else if (match.sport === 'voley') {
-        // Crear 2 sets de vóley con puntajes en 0
-        await createBulkDetallesVoley(
-          createBulkDetallesVoleyService({
-            sets: [
-              {
-                idPartido: matchId,
-                numeroSet: 1,
-                puntosEquipoLocal: 0,
-                puntosEquipoVisitante: 0,
-              },
-              {
-                idPartido: matchId,
-                numeroSet: 2,
-                puntosEquipoLocal: 0,
-                puntosEquipoVisitante: 0,
-              },
-            ],
-          }),
-        )
-        console.log(`✅ Detalles de vóley (2 sets) creados para partido ${matchId}`)
+        if (match.isFinal) {
+          // Crear 3 sets de vóley con puntajes en 0, solo para la final
+          await createBulkDetallesVoley(
+            createBulkDetallesVoleyService({
+              sets: [
+                {
+                  idPartido: matchId,
+                  numeroSet: 1,
+                  puntosEquipoLocal: 0,
+                  puntosEquipoVisitante: 0,
+                },
+                {
+                  idPartido: matchId,
+                  numeroSet: 2,
+                  puntosEquipoLocal: 0,
+                  puntosEquipoVisitante: 0,
+                },
+                {
+                  idPartido: matchId,
+                  numeroSet: 3,
+                  puntosEquipoLocal: 0,
+                  puntosEquipoVisitante: 0,
+                },
+              ],
+            }),
+          )
+          console.log(`✅ Detalles de vóley (3 sets) creados para partido ${matchId}`)
+        } else {
+          // Crear 2 sets de vóley con puntajes en 0, para partidos normales
+          await createBulkDetallesVoley(
+            createBulkDetallesVoleyService({
+              sets: [
+                {
+                  idPartido: matchId,
+                  numeroSet: 1,
+                  puntosEquipoLocal: 0,
+                  puntosEquipoVisitante: 0,
+                },
+                {
+                  idPartido: matchId,
+                  numeroSet: 2,
+                  puntosEquipoLocal: 0,
+                  puntosEquipoVisitante: 0,
+                },
+              ],
+            }),
+          )
+          console.log(`✅ Detalles de vóley (2 sets) creados para partido ${matchId}`)
+        }
       }
 
       // Actualizar el estado local
@@ -563,6 +600,84 @@ export function useMatchManager() {
     }
   }
 
+  const createFinalMatch = async (): Promise<void> => {
+    try {
+      setIsSaving(true)
+      setSaveError(null)
+
+      // Obtener partidos del deporte seleccionado de la API
+      const response = await fetchPartidos(getAllPartidosService(selectedSport === 'futbol' ? SPORT_IDS.FUTBOL : SPORT_IDS.VOLEY))
+      const partidosData = response.data
+
+      // Obtener top 2 equipos usando la lógica de clasificación
+      const top2 = getTop2Teams(partidosData, selectedSport)
+
+      if (!top2) {
+        throw new Error('No se pudieron obtener los 2 primeros equipos de la clasificación')
+      }
+
+      const [primerLugar, segundoLugar] = top2
+
+      // Crear el partido final
+      const now = new Date().toISOString()
+
+      const partidoFinalResponse = await createPartido(
+        createPartidoService({
+          idDeporte: selectedSport === 'futbol' ? SPORT_IDS.FUTBOL : SPORT_IDS.VOLEY,
+          idEquipoLocal: primerLugar.idEquipo,
+          idEquipoVisitante: segundoLugar.idEquipo,
+          dFechaEvento: now,
+          idEstado: MATCH_STATUS.PROGRAMADO,
+          lEtapaFinal: true,
+        }),
+      )
+
+      console.log(`✅ Partido final creado: ${primerLugar.name} vs ${segundoLugar.name}`)
+
+      // Agregar el partido final a la lista local
+      const eventDate = new Date(partidoFinalResponse.data.dFechaEvento)
+      const hours = eventDate.getUTCHours().toString().padStart(2, '0')
+      const minutes = eventDate.getUTCMinutes().toString().padStart(2, '0')
+
+      const finalMatch: Match = {
+        id: partidoFinalResponse.data.idPartido,
+        team1: {
+          id: primerLugar.idEquipo,
+          nombre: primerLugar.name,
+          detalles: '',
+        },
+        team2: {
+          id: segundoLugar.idEquipo,
+          nombre: segundoLugar.name,
+          detalles: '',
+        },
+        time: `${hours}:${minutes}`,
+        sport: selectedSport,
+        status: MATCH_STATUS.PROGRAMADO,
+        eventDate: partidoFinalResponse.data.dFechaEvento,
+        isFinal: true,
+      }
+
+      // Actualizar allMatches y matches
+      setAllMatches((prev) => [...prev, finalMatch])
+      setMatches((prev) => [...prev, finalMatch])
+
+      setIsSaving(false)
+    } catch (error) {
+      setIsSaving(false)
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al crear el partido final'
+      setSaveError(errorMessage)
+      console.error('Error al crear partido final:', error)
+      throw error
+    }
+  }
+
+  const areAllMatchesFinished = (): boolean => {
+    const currentSportMatches = matches.filter((m) => m.sport === selectedSport)
+    if (currentSportMatches.length === 0) return false
+    return currentSportMatches.every((m) => m.status === MATCH_STATUS.FINALIZADO)
+  }
+
   const canUseConfiguration = hasConfigurationForTeams(availableTeams.length)
 
   const currentConfiguration = availableTeams.length > 0 ? getMatchConfiguration(availableTeams.length, selectedSport) : null
@@ -589,5 +704,7 @@ export function useMatchManager() {
     error,
     isSaving,
     saveError,
+    createFinalMatch,
+    areAllMatchesFinished,
   }
 }

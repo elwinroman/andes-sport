@@ -1,4 +1,5 @@
 import { Card } from '@components/Card'
+import { Trophy } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { MATCH_STATUS } from '@/pages/partidos/constants/matchStatus'
@@ -19,6 +20,7 @@ interface LiveMatch {
   time: string
   homeTeam: string
   awayTeam: string
+  isFinal?: boolean
   homeScore?: number
   awayScore?: number
   sets?: Array<{
@@ -67,6 +69,7 @@ export function PartidoDestacado({ className, sportType, partidos, isLoading }: 
       time,
       homeTeam: partido.equipoLocal.cEquipo,
       awayTeam: partido.equipoVisitante.cEquipo,
+      isFinal: partido.lEtapaFinal || false,
       startDate: partido.dFechaInicio,
       elapsedMinutes: partido.dFechaInicio ? formatMatchMinutes(getElapsedMinutes(partido.dFechaInicio)) : "0'",
     }
@@ -191,7 +194,15 @@ export function PartidoDestacado({ className, sportType, partidos, isLoading }: 
   return (
     <Card className={className}>
       <div className="flex flex-col items-center justify-around gap-1 px-2 py-3 bg-accent">
-        <h5 className="mb-2 font-bold text-black font-montserrat">Destacado</h5>
+        <div className="flex items-center gap-2 mb-2">
+          <h5 className="font-bold text-black font-montserrat">Destacado</h5>
+          {liveMatch.isFinal && (
+            <span className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-yellow-700 bg-yellow-100 border border-yellow-300 rounded-full">
+              <Trophy className="w-3 h-3" />
+              FINAL
+            </span>
+          )}
+        </div>
         <span className="px-2 py-1 text-xs font-semibold text-white bg-black rounded-full w-fit">
           {liveMatch.date} ● {liveMatch.time}
         </span>

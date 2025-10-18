@@ -19,6 +19,15 @@ export interface PartidoBulkRequest {
   idEstado: number
 }
 
+export interface PartidoCreateRequest {
+  idDeporte: number
+  idEquipoLocal: number
+  idEquipoVisitante: number
+  dFechaEvento: string
+  idEstado: number
+  lEtapaFinal?: boolean
+}
+
 export interface BulkPartidosRequest {
   partidos: PartidoBulkRequest[]
 }
@@ -55,6 +64,7 @@ export interface PartidoApiResponse {
   dFechaFin: string
   idEstado: number
   lVigente: boolean
+  lEtapaFinal?: boolean
   dFechaRegistra: string
   dFechaModifica: string | null
   equipoLocal: EquipoEnPartido
@@ -149,6 +159,28 @@ export const updatePartidoService = (idPartido: number, params: UpdatePartidoReq
 
   const adapterCall = api
     .patch<PartidoApiResponse>(`/partidos/${idPartido}`, params, {
+      signal: controller.signal,
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      return {
+        ...response,
+        data: response.data,
+      }
+    })
+
+  return {
+    call: adapterCall,
+    controller,
+  }
+}
+
+export const createPartidoService = (params: PartidoCreateRequest): AxiosCall<PartidoApiResponse> => {
+  const controller = loadAbort()
+
+  const adapterCall = api
+    .post<PartidoApiResponse>('/partidos', params, {
       signal: controller.signal,
       withCredentials: true,
       headers: { Authorization: `Bearer ${token}` },

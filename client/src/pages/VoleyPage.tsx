@@ -1,3 +1,4 @@
+import { BracketFinal } from '@/components/BracketFinal'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { usePartidosData } from '@/hooks/usePartidosData'
 import { SPORT_IDS } from '@/pages/partidos/constants/sportIds'
@@ -6,6 +7,9 @@ import { Clasificacion, Destacado, Partidos } from './voley/components'
 
 export function VoleyPage() {
   const { partidos, isLoading } = usePartidosData({ idDeporte: SPORT_IDS.VOLEY })
+
+  // Verificar si hay partido final
+  const hasFinal = partidos.some((p) => p.lEtapaFinal === true)
 
   return (
     <section className="w-full">
@@ -20,12 +24,14 @@ export function VoleyPage() {
         </div>
         <div className="flex-[2_1_0%] hidden sm:block overflow-x-auto">
           <Clasificacion partidos={partidos} isLoading={isLoading} />
+          {hasFinal && <BracketFinal className="mt-4" sportType="voley" partidos={partidos} isLoading={isLoading} />}
         </div>
 
         <Tabs defaultValue="clasificacion" className="block sm:hidden">
           <TabsList className="w-full">
             <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
             <TabsTrigger value="partidos">Partidos</TabsTrigger>
+            {hasFinal && <TabsTrigger value="final">Final</TabsTrigger>}
           </TabsList>
           <TabsContent value="clasificacion">
             <Clasificacion partidos={partidos} isLoading={isLoading} />
@@ -33,6 +39,11 @@ export function VoleyPage() {
           <TabsContent value="partidos">
             <Partidos partidos={partidos} isLoading={isLoading} />
           </TabsContent>
+          {hasFinal && (
+            <TabsContent value="final">
+              <BracketFinal sportType="voley" partidos={partidos} isLoading={isLoading} />
+            </TabsContent>
+          )}
         </Tabs>
       </article>
     </section>

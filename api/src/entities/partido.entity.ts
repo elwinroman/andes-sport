@@ -32,6 +32,9 @@ export class Partido {
   @Column({ name: 'idEstado', nullable: true })
   idEstado: number
 
+  @Column({ name: 'lEtapaFinal', type: 'bit', default: 0 })
+  lEtapaFinal: boolean
+
   @Column({ name: 'lVigente', type: 'bit', default: 1 })
   lVigente: boolean
 
