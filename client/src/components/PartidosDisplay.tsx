@@ -1,4 +1,5 @@
 import { Card } from '@components/Card'
+import { Trophy } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { MATCH_STATUS } from '@/pages/partidos/constants/matchStatus'
@@ -23,6 +24,7 @@ interface ProcessedMatch {
   status: MatchStatus
   homeTeam: string
   awayTeam: string
+  isFinal?: boolean
   // Para fútbol: solo goles
   homeScore?: number
   awayScore?: number
@@ -183,10 +185,18 @@ function MatchItem({ match, sportType }: MatchItemProps) {
         {getStatusDisplay()}
       </div>
 
-      <div className="flex flex-col items-start px-2 text-sm font-medium border-l-2 border-border grow text-primary">
-        <span className={sportType === 'futbol' ? (awayWon ? ' text-secondary/80' : '') : awayWonVoley ? ' text-secondary/80' : ''}>
-          {match.homeTeam}
-        </span>
+      <div className="flex flex-col items-start px-2 text-[13px] font-semibold border-l-2 border-border grow text-primary">
+        <div className="flex items-center gap-2">
+          <span className={sportType === 'futbol' ? (awayWon ? ' text-secondary/80' : '') : awayWonVoley ? ' text-secondary/80' : ''}>
+            {match.homeTeam}
+          </span>
+          {match.isFinal && (
+            <span className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold text-yellow-700 bg-yellow-100 border border-yellow-300 rounded-full">
+              <Trophy className="w-3 h-3" />
+              FINAL
+            </span>
+          )}
+        </div>
         <span className={sportType === 'futbol' ? (homeWon ? ' text-secondary/80' : '') : homeWonVoley ? ' text-secondary/80' : ''}>
           {match.awayTeam}
         </span>
@@ -248,6 +258,7 @@ export function PartidosDisplay({ className, sportType, title, partidos, isLoadi
         status,
         homeTeam: partido.equipoLocal.cEquipo,
         awayTeam: partido.equipoVisitante.cEquipo,
+        isFinal: partido.lEtapaFinal || false,
       }
 
       // Calcular tiempo transcurrido si está en curso

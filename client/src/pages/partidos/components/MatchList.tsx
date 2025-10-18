@@ -15,7 +15,7 @@ interface MatchListProps {
 
 export function MatchList({ matches, onDeleteMatch, onEditMatch, onStartMatch, onFinishMatch }: MatchListProps) {
   return (
-    <Card className="flex flex-col flex-1 p-6 shadow-widget">
+    <Card className="flex flex-col flex-1 p-3 sm:p-6 shadow-widget">
       <CardHeader className="text-primary">
         <CardTitle className="flex items-center justify-between font-montserrat">
           <span className="flex items-center gap-2">Partidos Programados ({matches.length})</span>

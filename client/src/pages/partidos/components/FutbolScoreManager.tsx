@@ -89,62 +89,66 @@ export function FutbolScoreManager({
   }
 
   return (
-    <div className="flex flex-col gap-2 p-4 mt-3 border-t bg-slate-100 border-slate-300">
-      {error && <div className="px-3 py-2 text-sm text-center text-red-700 bg-red-100 border border-red-300 rounded">{error}</div>}
-      <div className="flex items-center justify-center gap-4">
+    <div className="flex flex-col gap-2 p-2 sm:p-4 mt-3 border-t bg-slate-100 border-slate-300">
+      {error && (
+        <div className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-center text-red-700 bg-red-100 border border-red-300 rounded">
+          {error}
+        </div>
+      )}
+      <div className="flex items-center justify-center gap-2 sm:gap-4">
         {/* Equipo Local */}
-        <div className="flex flex-col items-center flex-1 gap-2">
-          <span className="text-sm font-medium text-slate-700">{team1Name}</span>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center flex-1 gap-1.5 sm:gap-2 min-w-0">
+          <span className="text-xs sm:text-sm font-medium text-slate-700 truncate max-w-full text-center">{team1Name}</span>
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
               onClick={() => handleDecrement('local')}
               disabled={golesLocal === 0}
               variant="outline"
               size="icon"
-              className="w-8 h-8 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-30"
+              className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-30"
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
             </Button>
-            <div className="flex items-center justify-center w-16 h-12 text-2xl font-bold rounded bg-slate-200 text-slate-800">
+            <div className="flex items-center justify-center w-12 h-10 sm:w-16 sm:h-12 text-xl sm:text-2xl font-bold rounded bg-slate-200 text-slate-800">
               {golesLocal}
             </div>
             <Button
               onClick={() => handleIncrement('local')}
               variant="outline"
               size="icon"
-              className="w-8 h-8 text-green-600 border-green-300 hover:bg-green-50 hover:text-green-700"
+              className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 border-green-300 hover:bg-green-50 hover:text-green-700"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
             </Button>
           </div>
         </div>
 
         {/* Separador */}
-        <div className="text-2xl font-bold text-slate-500">-</div>
+        <div className="text-xl sm:text-2xl font-bold text-slate-500">-</div>
 
         {/* Equipo Visitante */}
-        <div className="flex flex-col items-center flex-1 gap-2">
-          <span className="text-sm font-medium text-slate-700">{team2Name}</span>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center flex-1 gap-1.5 sm:gap-2 min-w-0">
+          <span className="text-xs sm:text-sm font-medium text-slate-700 truncate max-w-full text-center">{team2Name}</span>
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
               onClick={() => handleDecrement('visitante')}
               disabled={golesVisitante === 0}
               variant="outline"
               size="icon"
-              className="w-8 h-8 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-30"
+              className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-30"
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
             </Button>
-            <div className="flex items-center justify-center w-16 h-12 text-2xl font-bold rounded bg-slate-200 text-slate-800">
+            <div className="flex items-center justify-center w-12 h-10 sm:w-16 sm:h-12 text-xl sm:text-2xl font-bold rounded bg-slate-200 text-slate-800">
               {golesVisitante}
             </div>
             <Button
               onClick={() => handleIncrement('visitante')}
               variant="outline"
               size="icon"
-              className="w-8 h-8 text-green-600 border-green-300 hover:bg-green-50 hover:text-green-700"
+              className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 border-green-300 hover:bg-green-50 hover:text-green-700"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
             </Button>
           </div>
         </div>
